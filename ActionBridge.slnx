@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ActionBridge.Common/ActionBridge.Common.csproj" />
+  <Project Path="ActionBridge.VSExtention/ActionBridge.VSExtention.csproj" />
+  <Project Path="ActionBridge/ActionBridge.csproj" />
+  <Project Path="Bridge/Bridge.csproj" />
+</Solution>
