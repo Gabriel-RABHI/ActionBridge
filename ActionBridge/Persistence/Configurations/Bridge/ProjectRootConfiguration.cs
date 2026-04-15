@@ -12,6 +12,8 @@ namespace ActionBridge.Persistence.Configurations.Bridge
 
     public class ProjectRootStates
     {
-        public int TopTicketId { get; set; }
+        public TicketId TopTicketId { get; set; } = new TicketId();
+
+        public SignalId TopSignalId { get; set; } = new TicketId();
     }
 }

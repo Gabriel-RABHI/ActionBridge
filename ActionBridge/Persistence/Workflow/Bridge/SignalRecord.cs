@@ -1,13 +1,8 @@
-﻿using ActionBridge.Structures.Workflow;
+﻿using ActionBridge.Values;
 
 namespace ActionBridge.Persistence.Workflow.Bridge
 {
     public class SignalRecord
-    {
-        public MarkerRecord Marker { get; set; }
-    }
-
-    public class MarkerRecord
     {
         public UtcTimeStamp CreationUtcTimeStamp { get; set; }
 
