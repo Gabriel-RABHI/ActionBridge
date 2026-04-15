@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Structures\Configurations\" />
-    <Folder Include="Structures\Server\" />
+    <Folder Include="Components\FileTree\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Persistence\Server\" />
   </ItemGroup>
 
 </Project>

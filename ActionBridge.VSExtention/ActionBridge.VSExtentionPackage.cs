@@ -49,5 +49,5 @@ namespace ActionBridge.VSExtention
     }
 
     #endregion
-}
+    }
 }

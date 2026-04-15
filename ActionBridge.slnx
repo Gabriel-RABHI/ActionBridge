@@ -1,5 +1,8 @@
 <Solution>
+  <Project Path="ActionBridge.Common.Tests/ActionBridge.Common.Tests.csproj" />
   <Project Path="ActionBridge.Common/ActionBridge.Common.csproj" />
+  <Project Path="ActionBridge.ManagerWebApp/ActionBridge.Dashboard.csproj" />
+  <Project Path="ActionBridge.Tests/ActionBridge.Tests.csproj" />
   <Project Path="ActionBridge.VSExtention/ActionBridge.VSExtention.csproj" />
   <Project Path="ActionBridge/ActionBridge.csproj" />
   <Project Path="Bridge/Bridge.csproj" />

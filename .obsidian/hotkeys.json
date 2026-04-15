@@ -1,0 +1,14 @@
+{
+  "editor:insert-codeblock": [
+    {
+      "modifiers": [],
+      "key": "F6"
+    }
+  ],
+  "editor:toggle-code": [
+    {
+      "modifiers": [],
+      "key": "F5"
+    }
+  ]
+}
