@@ -5,12 +5,11 @@
     /// </summary>
     public class DashboardConfiguration
     {
-
+        public List<ProjectRecord> Projects { get; set; } = new List<ProjectRecord>();
     }
-
 
     public class ProjectRecord
     {
-        public DirectoryFilePath DirectoryPath { get; set; }
+        public DirectoryPath RootDirectoryPath { get; set; } = string.Empty;
     }
 }

@@ -1,15 +1,10 @@
-﻿using ActionBridge.Structures.Workflow;
-using ActionBridge.Values;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
+﻿using ActionBridge.Values;
 
 namespace ActionBridge.Constants
 {
     public static class ActionBridgeConstants
     {
-        public const int DescriptionMacLenght = 1024;
+        public const int DescriptionMaxLenght = 1024;
 
         /// <summary>
         /// The directory where are record local system wide informations (list of the managed projects for the Dashboard)
@@ -22,7 +17,7 @@ namespace ActionBridge.Constants
         public const string ActionsDirectory = "Actions";
         public const string SignalDirectory = "Signals";
 
-        public const string WorkflowDirectory = "Workflow";
+        public const string BoardDirectory = "Board";
         public const string TicketsDirectory = "Tickets";
         public const string TasksDirectory = "Tasks";
         public const string HistoryDirectory = "History";
@@ -35,7 +30,9 @@ namespace ActionBridge.Constants
             BridgeDirectory, AgentsDirectory, ActionsDirectory, SignalDirectory
         };
 
-        public static AgentName DefaultAgentName => new AgentName("Unnamed Agent");
+        public static AgentName DefaultAgentName => new AgentName("Untitled");
+
+        public static ProjectName DefaultProjectName => new ProjectName("Untitled");
 
         public static string ComplientAsName(string value, string context)
         {
@@ -68,8 +65,8 @@ namespace ActionBridge.Constants
             if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
-            if (value.Length > DescriptionMacLenght)
-                throw new ArgumentException($"Name cannot exceed {DescriptionMacLenght} characters.", nameof(value));
+            if (value.Length > DescriptionMaxLenght)
+                throw new ArgumentException($"Name cannot exceed {DescriptionMaxLenght} characters.", nameof(value));
 
             return value;
         }

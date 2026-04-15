@@ -11,10 +11,10 @@ namespace ActionBridge.Persistence.Workflow.Bridge
     {
         public UtcTimeStamp CreationUtcTimeStamp { get; set; }
 
-        public MarkerFilePath FilePath { get; set; }
+        public FilePath FilePath { get; set; }
 
-        public MarkerLineNumber LineNumber { get; set; }
+        public LineNumber LineNumber { get; set; }
 
-        public MarkerTextExtract TextExtract { get; set; }
+        public TextExtract TextExtract { get; set; }
     }
 }

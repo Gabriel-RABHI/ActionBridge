@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 
 namespace ActionBridge.Values
 {
-
     [JsonConverter(typeof(AgentNameConverter))]
     public record AgentName
     {
@@ -17,6 +16,8 @@ namespace ActionBridge.Values
 
         [JsonConstructor]
         public AgentName(string value) => Name = ActionBridgeConstants.ComplientAsName(value, nameof(AgentName));
+
+        public AgentName() => Name = ActionBridgeConstants.DefaultAgentName;
     }
 
     public class AgentNameConverter : JsonConverter<AgentName>

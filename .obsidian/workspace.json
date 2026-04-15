@@ -198,20 +198,21 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "c59f19815c959f08",
+  "active": "73c9d440915ef464",
   "lastOpenFiles": [
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/ActionBridge.Dashboard.Core.Tests.csproj.AssemblyReference.cache",
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/ActionBridge.Dashboard.Core.Tests.assets.cache",
+    "ActionBridge.Dashboard.Core.Tests/obj/ActionBridge.Dashboard.Core.Tests.csproj.nuget.dgspec.json",
+    "ActionBridge.Dashboard.Core.Tests/obj/project.nuget.cache",
+    "ActionBridge.Dashboard.Core.Tests/obj/project.assets.json",
+    "ActionBridge.Dashboard.Core.Tests/obj/ActionBridge.Dashboard.Core.Tests.csproj.nuget.g.targets",
+    "ActionBridge.Dashboard.Core.Tests/obj/ActionBridge.Dashboard.Core.Tests.csproj.nuget.g.props",
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/ActionBridge.Dashboard.Core.Tests.AssemblyInfo.cs",
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/ActionBridge.Dashboard.Core.Tests.AssemblyInfoInputs.cache",
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/ActionBridge.Dashboard.Core.Tests.GeneratedMSBuildEditorConfig.editorconfig",
+    "ActionBridge.Dashboard.Core.Tests/obj/Debug/net10.0/refint",
     "Documentation/Concept.md",
     "Sans titre.md",
-    "ActionBridge/Persistence/Configurations/Bridge/ProjectRootConfiguration.cs",
-    "ActionBridge/Persistence/Configurations/Dashboard/ProjectConfiguration.cs",
-    "ActionBridge/Persistence/Configurations/Dashboard",
-    "ActionBridge.ManagerWebApp/Components/_Imports.razor",
-    "ActionBridge.ManagerWebApp/Components/Routes.razor",
-    "ActionBridge.ManagerWebApp/obj/ActionBridge.Dashboard.csproj.nuget.dgspec.json",
-    "ActionBridge.ManagerWebApp/obj/ActionBridge.Dashboard.csproj.nuget.g.targets",
-    "ActionBridge.ManagerWebApp/obj/ActionBridge.Dashboard.csproj.nuget.g.props",
-    "ActionBridge.ManagerWebApp/obj/Debug/net10.0/ActionBridge.Dashboard.AssemblyInfo.cs",
-    "ActionBridge.ManagerWebApp/obj/Debug/net10.0/ActionBridge.Dashboard.AssemblyInfoInputs.cache",
     "Notes/Brainstorm-1.md",
     "README.md"
   ]

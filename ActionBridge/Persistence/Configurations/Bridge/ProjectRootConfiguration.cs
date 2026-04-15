@@ -5,8 +5,13 @@ namespace ActionBridge.Persistence.Configurations.Bridge
 {
     public class ProjectRootConfiguration
     {
-        public ProjectName AgentName { get; set; } = ActionBridgeConstants.DefaultAgentName;
+        public ProjectName Name { get; set; } = ActionBridgeConstants.DefaultProjectName;
 
-        public ProjectPurpose Purpose { get; set; } = new AgentPurpose(string.Empty);
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class ProjectRootStates
+    {
+        public int TopTicketId { get; set; }
     }
 }
