@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/Concept.md",
+                "file": "Documentation/Basics.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Concept"
+              "title": "Basics"
             }
           },
           {
@@ -198,12 +198,12 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "73c9d440915ef464",
+  "active": "c59f19815c959f08",
   "lastOpenFiles": [
-    "Sans titre.md",
-    "README.md",
     "Notes/Exploration.md",
-    "Documentation/Concept.md",
+    "Documentation/Basics.md",
+    "README.md",
+    "Sans titre.md",
     "ActionBridge/Persistence/Configurations/Bridge/ProjectRootStates.cs",
     "ActionBridge/Persistence/Workflow/PlugIns/PendingAgentPromptRecord.cs",
     "ActionBridge/Persistence/Workflow/PlugIns",

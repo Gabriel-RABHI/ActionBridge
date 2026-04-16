@@ -34,7 +34,7 @@ In such an architecture, at any given level, only the abstractions of the underl
 
 ---
 
-_NOTE: Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift.
+_NOTE: Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift._
 
 _To natively support this model at scale, a groundbreaking high performance, distributed, and transactional .NET persistent memory technology is currently in development. By implementing an Entity Component System (ECS) backed by Event Sourcing (or Mutation Sourcing) specifically tailored for LOB software, this architecture entirely obsoletes traditional DBMS, ORMs, Message Brokers and integration tests._
 
@@ -62,9 +62,9 @@ ActionBridge abandons the persistent "chat" paradigm. Instead, it introduces a d
 
 **ActionBridge** leverages the local file system as a database, message broker, and state machine, allowing multiple AI agents to be invoked to perform iterative programming work. Built around a **CLI-first architecture** (`bridge.exe`), ActionBridge acts as the glue between user intent and LLM coding tools:
 - **Signals:** On one side are Signals. A Signal is a JSON file containing a file path, a line number, and a text extraction, which serves as the starting point for an operation. Signals can be generated directly from the code editor using custom IDE extensions for VS Code or Visual Studio.
-- **Coding Tools:** On the opposite side is the LLM coding tool, **Goose** as default. **Claude Code**, or any CLI-based LLM runner can be used.
 - **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
 - **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
+- **Coding Tools:** On the opposite side is the LLM coding tool, **Goose** as default. **Claude Code**, or any CLI-based LLM runner can be used.
 ## Workflow
 
 In the IDE, in the source editor for a specific file, right-click permit to call the Bridge plug-ins command "Create a signal". It create a **Signal** JSON file containing (1) the file path, (2) the line number of the caret, and (3) the selected text in the editor.
@@ -72,7 +72,7 @@ In the IDE, in the source editor for a specific file, right-click permit to call
 In the **Dashboard** application UI, this **Signal** files are stacked as inputs data. This inputs can be selected to build a **Ticket**, a prompt to send to the LLM tool to plan a given programming work. To do it, there is a list of the various **Agents** seen from the main selected path. Under each agent, the defined **Actions** are listed. You can select an **Action** or write a prompt yourself. The prompt is previewed immediately with the **Agent** specific context. It can be manually edited too. Then you can click "Run". The pending **Ticket** is sent to the LLM coding tool if there no existing **Ticket** pending or in process. The **Ticket** is converted in **Tasks** by the LLM Coding Tool, then this **Tasks** are send to the LLM Coding Tool for execution.
 
 When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
-## The Recursive View
+## The Recursive Exploration
 
 In the Dashboard, the visible Agents is the one found in a recursive scan from the selected file point to the root directory of the project. The same principle apply to Actions and prompt component file. This materialize the foundational, per domain and aspect adaptations and optimizations of the context. It can be used for many adaptations, including :
 
@@ -127,13 +127,7 @@ When local, branch-specific contextual guidance, business rules, and documentati
 - **Benefits:**
     - **Zero Technical Debt:** Code never has time to "rot." If it gets messy, you don't refactor it; you refine the rules and regenerate it perfectly clean.
     - **Absolute Developer Confidence:** The fear of breaking legacy code vanishes when you know the code is just a transient output that can be reliably rebuilt on demand.
-# Components
-## Four components goals
-
-- **The Bridge Shell** : it is a library of methods for file management and workflow control. This shell is encapsulated in the `bridge.exe`, a CLI tool that can be called by any system - external tools or AI Agents. The Bridge can call the LLM Coding Tool to execute both Tickets and Tasks.
-- **The Signalling tools** : it is a peace of software used to create Signals. A Signals file record a file path, a line number and a text.  Signals are written in a dedicated directory, and can be created by a IDE plug-in (Visual Studio, VS Code).
-- **The Dashboard** : it is background application that implement a Web UI to manage the whole system : configure projects, create agents, define actions, list Signals, create Tickets and manage tasks completion.
-### A Note on the First Implementation: Why Goose?
+## Why Goose?
 
 ActionBridge’s initial implementation utilizes **Goose** (an open-source AI agent) as its primary LLM Coding Tool. This is a highly intentional choice driven by the need for absolute control over the AI's cognitive load.
 
@@ -148,7 +142,7 @@ By integrating ActionBridge's architecture with Goose, we achieve several critic
 - **Benchmarking and "Right-Sizing" the LLM:** Because tasks are highly isolated and the prompts are minimized, ActionBridge allows developers to empirically measure exactly how much "LLM power" is actually required for specific operations. You no longer have to throw a massive, expensive frontier model at a simple data-mapping task just to guarantee success.
     
 - **The Endgame: Unlocking Local, Small-Parameter LLMs:** This is the most profound benefit. In traditional, high-context AI workflows, large, cloud-based frontier models are the only option capable of handling the noise. However, by strictly minimizing both the system prompt and the local context, ActionBridge radically reduces the reasoning effort required. **This is the only viable pathway to utilizing fast, local, small-parameter LLMs (e.g., 8B or 14B models) for real, large-scale enterprise development.** Ultimately, this strategy removes the dependency on expensive, latency-heavy cloud models. It allows line-of-business software to be generated locally, ensuring absolute data privacy, near-instant execution speeds, and zero token costs, all while maintaining enterprise-grade reliability.
-## File System
+# File System
 
 **ActionBridge** use only files and directory to store data, configurations and manage workflows. No database, no external state management. All configurations, Tickets and Tasks are stored in `.bridge` directories. There is not one, single `.bridge` directory per project, but many. They are disseminated in the project directory tree to personalize rules, instructions, agents, actions.
 
@@ -159,21 +153,7 @@ Each `.bridge` directory can be compliant to few conventions :
 - `.bridge/History` directory, where refined work's summaries are accumulated.
 - `.bridge/.archive` directory, where all, older Tasks and Tickets are saved.
 - `.bridge/Signals` is only located in top `.bridge` directory. This is where signal files are stored.
-### Directories
-#### Agents
-`.bridge/Agents/`
-`.bridge/Agents/[agent name]/`
-`.bridge/Agents/[agent name]/Actions/`
-#### Board
-`.bridge/Board/Tickets/`
-`.bridge/Board/Tasks/`
-#### History
-`.bridge/History/`
-`.bridge/.archive/`
-#### Signals
-`.bridge/Signals/`
-# Agent Definitions
-## Prompt Aggregation Convention
+## Agent Definitions
 
 When building a Ticket using the Dashboard, the bridge shell will perform a prompt aggregation. This is based on the exploration of local `.bridge` directory to concatenate the various part of the Ticket prompt. There is few naming conventions :
 - `_start.md` : all time concatenated first.
@@ -196,8 +176,8 @@ Directories and content :
 **Caution** :  note that **ends** are reversed (E2 + E1 + E0), like brackets in code.
 
 Note that the `_end.md` files permit to chain operations by starting new Tickets or new Tasks.
-# Action Definitions
-### Templating
+## Action Definitions
+
 Actions are predefined prompts that describe a task to be done. They support templating by inserting datas that comes from the **Signal** files records :
 - `$FILE` : the complete file path, relative to root `.bridge` directory path.
 - `$LINE` : the line number.
@@ -234,8 +214,7 @@ $else
 Review the code in file $FILE".
 $endif
 ```
-# Workflow System
-## File Name Conventions
+## Workflow System
 
 The cinematic of the workflow is this one :
 - A Ticket is created using the Dashboard (or any other tool, or by an IA Coding Tool) in the `/Tickets/` directory. The ticket file name is made to avoid conflit and respect oredring sequance : "Ticket_00001.md"
@@ -264,45 +243,35 @@ The cinematic of the workflow is this one :
 	
 - `Index` : the file that contains a list of all Summary.
 	- `Summary_Index.md`
-# Default Agents
-## Minimal Workflow
+## Default Agents
 
 ActionBridge need few default Agents to makes work done :
 - `Dev` : for every coding Ticket.
 - `Reviewer` : Tickets to critics the written code and generate new fixing tasks.
 - `Scrib` : Tickets to write documentation, summaries and maintains history.
-## Supervisor Instructions
-
-# The Bridge
-## The Bridge Shell Features
-### Find The Root
-```c#
-string GetRootBridge(string fromPath);
-```
-
 # Work In Progress
-
+### Conception
 - [ ] Conceptual definition
-	- [ ] Overview
+	- [x] Overview
 	- [ ] GBO definition
-	- [ ] Workflow
-	- [ ] Components
+	- [x] Workflow
+	- [x] Components
 - [ ] Technical Specification
 	- [ ] File system
 	- [ ] 
+### Implementation
+- [ ] Basic Implementation
+- [ ] Proof Of Concept
+- [ ] Complete File System Implementation
+- [ ] Dashboard Core
 
 ## 🤝 Contributing
 
 Contributions are welcome! Whether you are building new Execution Adapters, improving the C# Context Resolver, or creating new default Agent Profiles, please submit a Pull Request.
-
 1. Fork the Project
-    
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-    
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-    
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
-    
 5. Open a Pull Request
     
 ## 📄 License
