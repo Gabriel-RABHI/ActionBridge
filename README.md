@@ -2,8 +2,9 @@
 
 ## Overview
 
-ActionBridge introduces a structured, simple, file-system-based workflow for **AI-assisted, large-scale software development**. Its goal is to optimize AI agents' context and workflow to deliver the most reliable results in complex codebases. It is designed to power a new class of architecture dedicated to AI-assisted LOB (Line of Business) software development.
+ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing **Hierarchical, Fractal Prompt Building**, it aggressively optimizes AI agent context and execution, delivering reliable results even within the most complex codebases.
 
+It implements an iterative, hierarchical specification process where **the code itself is treated as a temporary, replaceable artifact**. While ActionBridge is purpose-built to pioneer a new class of architecture dedicated to AI-assisted Line of Business (LOB) software, its workflow can be seamlessly applied to any existing codebase to enhance AI reliability and output quality.
 ## Why?
 
 The foundational premise of ActionBridge is that applying LLMs to traditional software architectures—systems inherently designed _by_ humans, _for_ humans—is fundamentally flawed. When unleashed on medium-to-large legacy codebases, AI inevitably triggers context hallucinations, code duplication, silent bugs, and eventual code collapse.
@@ -16,7 +17,9 @@ The next generation of software architecture must be explicitly designed for **A
 
 In this new paradigm, large projects can be built using **vertical modularization** (e.g., Sales, Users, Orders, Shipping) intersecting with **horizontal layers** (UI Components, UI State, Domain Logic, Read Models, and Asynchronous Services).
 
-The intersection of a vertical slice and a horizontal layer forms a **Cell**. Because Cells can encapsulate other Cells, the architecture is inherently fractal. Source code is distributed across separate projects, and within each project, every aspect is organized into deep directory trees.
+The intersection of a vertical slice and a horizontal layer forms a **Cell**. Because Cells can encapsulate other Cells, the architecture is inherently fractal. Source code is distributed across separate projects, and within each project, every aspect is organized into deep directory trees. 
+
+_NOTE : the vertical alignment is not a absolute architectural schema. Overlapping and misalignment is a necessary mitigation. The Cell concept remain a useful concept._
 
 Crucially, each Cell completely hides its internal data structures, processes, and logic, exposing only a strict, reduced set of abstractions:
 
@@ -28,9 +31,13 @@ Crucially, each Cell completely hides its internal data structures, processes, a
     
 In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort. We believe this strict encapsulation is the necessary foundation for next-decade, large-scale LOB systems.
 
-_**NOTE :** This kind of architecture needs new approaches to software design. It requires new technical foundations: persistence, database concepts, communication, and distribution across servers must evolve to materialize such an architectural shift. A groundbreaking, **dedicated distributed .NET persistent memory model** technology implementing an **Entity Component System** (ECS) tailored for LOB software is currently in development to natively support this model at scale._
+_**NOTE:** Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift.
 
-While ActionBridge is perfectly cohesive with this new fractal architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability, quality, and robustness of AI-generated code.
+_To natively support this model at scale, a groundbreaking high performance, distributed, and transactional .NET persistent memory technology is currently in development. By implementing an Entity Component System (ECS) backed by Event Sourcing (or Mutation Sourcing) specifically tailored for LOB software, this architecture entirely obsoletes traditional DBMS, ORMs, Message Brokers and integration tests._
+
+_The result is a codebase that is at least three times smaller than an average LOB solution. System complexity and unintended side effects may be reduced by an order of magnitude—a reduction tangibly measured by the lower LLM token consumption required to implement any given feature._
+
+While ActionBridge is perfectly cohesive with this new fractal architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
 ## The Agentic Solution
 
 If you try to build a single AI Agent to handle all the specifications, rules, and technologies—while expecting it to understand both the macro-architecture and the micro-details of each **Cell**—its context window becomes overwhelmingly large. This context bloat induces "hallucinations" and paralyzes the model's reasoning capabilities.
@@ -277,6 +284,17 @@ ActionBridge need few default Agents to makes work done :
 ```c#
 string GetRootBridge(string fromPath);
 ```
+
+# Work In Progress
+
+- [ ] Conceptual definition
+	- [ ] Overview
+	- [ ] GBO definition
+	- [ ] Workflow
+	- [ ] Components
+- [ ] Technical Specification
+	- [ ] File system
+	- [ ] 
 
 ## 🤝 Contributing
 
