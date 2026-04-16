@@ -52,7 +52,7 @@ ActionBridge abandons the persistent "chat" paradigm. Instead, it introduces a d
 
 **ActionBridge** leverages the local file system as a database, message broker, and state machine, allowing multiple AI agents to be invoked to perform iterative programming work. Built around a **CLI-first architecture** (`bridge.exe`), ActionBridge acts as the glue between user intent and LLM coding tools:
 - **Signals:** On one side are Signals. A Signal is a JSON file containing a file path, a line number, and a text extraction, which serves as the starting point for an operation. Signals can be generated directly from the code editor using custom IDE extensions for VS Code or Visual Studio.
-- **Coding Tools:** On the opposite side is the LLM coding tool, such as **Goose**, **Claude Code**, or any CLI-based LLM runner.
+- **Coding Tools:** On the opposite side is the LLM coding tool, **Goose** as default. **Claude Code**, or any CLI-based LLM runner can be used.
 - **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
 - **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
 ## Workflow
@@ -62,7 +62,7 @@ In the IDE, in the source editor for a specific file, right-click permit to call
 In the **Dashboard** application UI, this **Signal** files are stacked as inputs data. This inputs can be selected to build a **Ticket**, a prompt to send to the LLM tool to plan a given programming work. To do it, there is a list of the various **Agents** seen from the main selected path. Under each agent, the defined **Actions** are listed. You can select an **Action** or write a prompt yourself. The prompt is previewed immediately with the **Agent** specific context. It can be manually edited too. Then you can click "Run". The pending **Ticket** is sent to the LLM coding tool if there no existing **Ticket** pending or in process. The **Ticket** is converted in **Tasks** by the LLM Coding Tool, then this **Tasks** are send to the LLM Coding Tool for execution.
 
 When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
-Here is a deep, structured expansion of the "What does it change?" section. It breaks down your core ideas into distinct sub-concepts, provides concrete examples, and highlights the specific benefits of this architectural shift to make your vision clear and compelling.
+
 ## What Does This Change?
 
 ActionBridge fundamentally shifts the developer's role from writing and maintaining source code to defining and refining intent, rules, and context. By treating code as a temporary byproduct of highly localized knowledge, it introduces a completely new paradigm for software engineering.
@@ -77,9 +77,7 @@ In traditional AI coding workflows, the agent is often fed an overwhelming amoun
 - **Example:** If an AI agent is tasked with modifying a front-end `SubmitButton` component, it inherits global UI design tokens and the local state-management rules of that specific form. It is _completely blind_ to the database schema, the background message queue policies, or the Order module's business logic.
     
 - **Benefits:**
-    
     - **Zero Context Bloat:** By starving the AI of irrelevant information, you preserve its reasoning capabilities and maximize its effective context window.
-        
     - **Eradication of Hallucinations:** The agent cannot accidentally invent dependencies or call unauthorized backend services if it doesn't even know they exist.
         
 ### 2. Iterative Context Enhancement: The Knowledge Base as the Source of Truth
@@ -123,6 +121,21 @@ When local, branch-specific contextual guidance, business rules, and documentati
 - **The Bridge Shell** : it is a library of methods for file management and workflow control. This shell is encapsulated in the `bridge.exe`, a CLI tool that can be called by any system - external tools or AI Agents. The Bridge can call the LLM Coding Tool to execute both Tickets and Tasks.
 - **The Signalling tools** : it is a peace of software used to create Signals. A Signals file record a file path, a line number and a text.  Signals are written in a dedicated directory, and can be created by a IDE plug-in (Visual Studio, VS Code).
 - **The Dashboard** : it is background application that implement a Web UI to manage the whole system : configure projects, create agents, define actions, list Signals, create Tickets and manage tasks completion.
+### A Note on the First Implementation: Why Goose?
+
+ActionBridge’s initial implementation utilizes **Goose** (an open-source AI agent) as its primary LLM Coding Tool. This is a highly intentional choice driven by the need for absolute control over the AI's cognitive load.
+
+The overarching goal of ActionBridge is to drastically reduce context size and enforce hyper-specialization at the Ticket or Task level. Goose is uniquely suited for this because it allows for granular, dynamic control over the **system prompt** by letting us configure exactly which tools are exposed to the agent for any given task.
+
+By integrating ActionBridge's architecture with Goose, we achieve several critical breakthroughs:
+
+- **Granular Tool Control (System Prompt Reduction):** A generic AI agent usually carries a massive system prompt loaded with dozens of tools (file search, bash execution, browser access, etc.) just in case it needs them. ActionBridge configures Goose to strip away the excess. If a Task only requires updating a specific markdown file, the agent is spawned _only_ with the tool needed to write to that file. This drastically shrinks the system prompt.
+    
+- **Hyper-Specialization at the Task Level:** When you combine ActionBridge’s _Fractal Prompt Building_ (which aggressively minimizes the user context) with Goose’s _Tool Pruning_ (which minimizes the system prompt), the AI is placed in a highly constrained, hyper-focused environment. It doesn't have to waste reasoning power deciding _which_ tool to use or _what_ part of the codebase to look at.
+    
+- **Benchmarking and "Right-Sizing" the LLM:** Because tasks are highly isolated and the prompts are minimized, ActionBridge allows developers to empirically measure exactly how much "LLM power" is actually required for specific operations. You no longer have to throw a massive, expensive frontier model at a simple data-mapping task just to guarantee success.
+    
+- **The Endgame: Unlocking Local, Small-Parameter LLMs:** This is the most profound benefit. In traditional, high-context AI workflows, large, cloud-based frontier models are the only option capable of handling the noise. However, by strictly minimizing both the system prompt and the local context, ActionBridge radically reduces the reasoning effort required. **This is the only viable pathway to utilizing fast, local, small-parameter LLMs (e.g., 8B or 14B models) for real, large-scale enterprise development.** Ultimately, this strategy removes the dependency on expensive, latency-heavy cloud models. It allows line-of-business software to be generated locally, ensuring absolute data privacy, near-instant execution speeds, and zero token costs, all while maintaining enterprise-grade reliability.
 ## File System
 
 **ActionBridge** use only files and directory to store data, configurations and manage workflows. No database, no external state management. All configurations, Tickets and Tasks are stored in `.bridge` directories. There is not one, single `.bridge` directory per project, but many. They are disseminated in the project directory tree to personalize rules, instructions, agents, actions.
