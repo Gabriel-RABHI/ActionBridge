@@ -30,9 +30,11 @@ Crucially, each Cell completely hides its internal data structures, processes, a
     
 - **Jobs** (what background operations a service can perform), **JobStatus**, and **JobResult**.
     
-In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This is compliant to actual DDD and Clean Architectures principles. This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort.
+In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. This is similar to actual DDD and Clean Architectures principles, promoting Inversion of Control and dependency injection, like Hexagonal architecture. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort.
 
-_**NOTE:** Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift.
+---
+
+_NOTE: Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift.
 
 _To natively support this model at scale, a groundbreaking high performance, distributed, and transactional .NET persistent memory technology is currently in development. By implementing an Entity Component System (ECS) backed by Event Sourcing (or Mutation Sourcing) specifically tailored for LOB software, this architecture entirely obsoletes traditional DBMS, ORMs, Message Brokers and integration tests._
 
