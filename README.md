@@ -2,16 +2,17 @@
 
 ## Overview
 
-ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing **Hierarchical, Fractal Prompt Building**, it aggressively optimizes AI agent context and execution, delivering reliable results even within the most complex codebases.
+ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing **Hierarchical, Fractal Prompt Building**, it aggressively optimizes AI agent context and execution, delivering better results within the most complex codebases.
 
 It implements an iterative, hierarchical specification process where **the code itself is treated as a temporary, replaceable artifact**. While ActionBridge is purpose-built to pioneer a new class of architecture dedicated to AI-assisted Line of Business (LOB) software, its workflow can be seamlessly applied to any existing codebase to enhance AI reliability and output quality.
 ## Why?
 
 The foundational premise of ActionBridge is that applying LLMs to traditional software architectures—systems inherently designed _by_ humans, _for_ humans—is fundamentally flawed. When unleashed on medium-to-large legacy codebases, AI inevitably triggers context hallucinations, code duplication, silent bugs, and eventual code collapse.
 
-Currently, the only viable workaround is a rigidly step-by-step, highly localized, and deeply human-reviewed programming workflow. However, as codebase size and complexity grow, developer confidence plummets. This creates a critical paradox: the lightning-fast speed of AI code generation induces an overwhelming, counterproductive bottleneck in human review. In the past, developers knew what was in the code, how it worked, and the root of the design choices. Now, AI decides and writes the code, while developers simply push it. What is seen as a productivity gain becomes a knowledge debt.
+Currently, the only viable workaround is a rigidly step-by-step, highly localized, and deeply human-reviewed programming workflow. However, as codebase size and complexity grow, developer confidence plummets. This creates a critical paradox: the lightning-fast speed of AI code generation can induces an overwhelming, counterproductive bottleneck in human review. In the past, developers knew what was in the code, how it worked, and the root of the design choices. Now, AI decides and writes the code, while most developers simply push it. What is seen as a productivity gain becomes a knowledge debt.
 
-We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand human chaos?"_ Instead, it is about asking, _"How do we enhance software architecture to perfectly align with what LLMs are actually capable of producing?"_
+We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand large codebase chaos?"_ Instead, it is about asking, _"How do we enhance software architecture to perfectly align with what LLMs are actually capable of producing?"_
+## The Ideal Architecture
 
 The next generation of software architecture must be explicitly designed for **AI-assisted development**. Boilerplate and glue code must be abstracted away from the AI's scope, allowing the models to focus entirely on specific business domains and distinct functional aspects.
 
@@ -29,22 +30,22 @@ Crucially, each Cell completely hides its internal data structures, processes, a
     
 - **Jobs** (what background operations a service can perform), **JobStatus**, and **JobResult**.
     
-In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort. We believe this strict encapsulation is the necessary foundation for next-decade, large-scale LOB systems.
+In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This is compliant to actual DDD and Clean Architectures principles. This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort.
 
 _**NOTE:** Realizing this architectural vision requires fundamentally rethinking software design. Traditional technical foundations—persistence, database concepts, inter-service communication, and distributed state—must evolve to support this paradigm shift.
 
 _To natively support this model at scale, a groundbreaking high performance, distributed, and transactional .NET persistent memory technology is currently in development. By implementing an Entity Component System (ECS) backed by Event Sourcing (or Mutation Sourcing) specifically tailored for LOB software, this architecture entirely obsoletes traditional DBMS, ORMs, Message Brokers and integration tests._
 
 _The result is a codebase that is at least three times smaller than an average LOB solution. System complexity and unintended side effects may be reduced by an order of magnitude—a reduction tangibly measured by the lower LLM token consumption required to implement any given feature._
+## The Enhanced Legacy
 
-While ActionBridge is perfectly cohesive with this new fractal architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
-## The Agentic Solution
+While ActionBridge is perfectly cohesive with this new Cell based architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
 
-If you try to build a single AI Agent to handle all the specifications, rules, and technologies—while expecting it to understand both the macro-architecture and the micro-details of each **Cell**—its context window becomes overwhelmingly large. This context bloat induces "hallucinations" and paralyzes the model's reasoning capabilities.
+If you try to build a single AI Agent to handle all the specifications, rules, and technologies—while expecting it to understand both the macro-architecture and the micro-details of each component—its context window becomes overwhelmingly large. This context bloat induces "hallucinations" and paralyzes the model's reasoning capabilities.
 
 Furthermore, if you attempt a "one-shot" implementation using a traditional persistent Orchestrator-to-Worker swarm, the conversational memory for both agents grows indefinitely. As the chat history fills with dead ends and debugging loops, the AI's attention mechanism decays. This inevitably leads to massive, silent code collapse and insurmountable technical debt.
 
-ActionBridge abandons the persistent "chat" paradigm. Instead, it introduces a deterministic, file-system-driven state machine aligned with this fractal architecture:
+ActionBridge abandons the persistent "chat" paradigm. Instead, it introduces a deterministic, file-system-driven state machine aligned with any structured architecture:
 
 - **Hierarchical, Fractal Prompt Building:** To eliminate context bloat, ActionBridge contextualizes each task using recursive prompt aggregation. It reads from the agent's current file location up to the root of the project. This allows the LLM to discover only the most relevant, "need-to-know" local instructions—ensuring architectures, technologies, and business rules are injected exactly where they belong in the directory tree.
     
@@ -90,9 +91,7 @@ Here is a deep dive into the core concepts driving this change.
 In traditional AI coding workflows, the agent is often fed an overwhelming amount of global context, most of which is irrelevant to the specific task. Fractal Prompt Building mimics the mental model of an expert human developer by strictly isolating context based on location in the architecture.
 
 - **The Sub-Concept:** Context is aggregated hierarchically from the root of the project down to the specific file. An agent working deep within a specific folder only sees the global rules that cascade down, combined with the hyper-specific rules of its current directory.
-    
 - **Example:** If an AI agent is tasked with modifying a front-end `SubmitButton` component, it inherits global UI design tokens and the local state-management rules of that specific form. It is _completely blind_ to the database schema, the background message queue policies, or the Order module's business logic.
-    
 - **Benefits:**
     - **Zero Context Bloat:** By starving the AI of irrelevant information, you preserve its reasoning capabilities and maximize its effective context window.
     - **Eradication of Hallucinations:** The agent cannot accidentally invent dependencies or call unauthorized backend services if it doesn't even know they exist.
@@ -102,9 +101,7 @@ In traditional AI coding workflows, the agent is often fed an overwhelming amoun
 Traditionally, documentation rots because it is secondary to the code. In the ActionBridge workflow, the local context, business rules, constraints, and documentation _drive_ the code generation. Therefore, refining the context is the primary development activity.
 
 - **The Sub-Concept:** Developers iterate on the local AI context as intensively as they used to iterate on source code. By adding branch-specific specifications, constraints, and historical ticket summaries, developers step-by-step build a localized knowledge base that acts as a perfect mirror of the desired code state.
-    
 - **Example:** A developer notices the AI generated a component that doesn't handle edge-case error states correctly. Instead of manually editing the code to fix the bug, the developer adds a rule to the local `context.md` file: _"All UI components in this directory must explicitly handle and render `TimeoutException` states."_ The Ticket is then rerun, and the AI generates the correct code.
-    
 - **Benefits:**
     - **Living Documentation:** The documentation is inherently kept up to date because if it isn't, the AI cannot generate the correct code.
     - **Compounding Value:** Every rule added to the context makes all future AI operations in that directory smarter, safer, and more predictable.
@@ -114,9 +111,7 @@ Traditionally, documentation rots because it is secondary to the code. In the Ac
 ActionBridge treats Tickets not as static prompts, but as dynamic state evaluators. A Ticket continuously compares what the user wants (Intent) with what actually exists in the files (Code Reality).
 
 - **The Sub-Concept:** The goal of a Ticket is simply to emit the exact sequence of Tasks required to reduce the distance between the intent and the current reality to zero.
-    
 - **Example:** You have a Ticket titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 10 tasks to create files, write logic, and map models. If you reactivate the exact same Ticket a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits only 2 tasks to update the specific API mappings.
-    
 - **Benefits:**
     - **Idempotent Execution:** You can safely rerun Tickets. If the code already matches the intent, the AI will evaluate the state and do nothing.
     - **Automated Refactoring:** Reactivating old Tickets against a newly updated foundational architecture forces the AI to bridge the gap and automatically update the local code to match new global standards.
@@ -126,9 +121,7 @@ ActionBridge treats Tickets not as static prompts, but as dynamic state evaluato
 When local, branch-specific contextual guidance, business rules, and documentation achieve a high enough descriptive power, the source code itself loses its sacred status.
 
 - **The Sub-Concept:** Source code becomes a completely disposable, temporary artifact. The true asset of your software is the recursively aggregated definitions and intents.
-    
 - **Example:** Imagine realizing a foundational design flaw in a massive legacy module. In a traditional codebase, this means months of risky, manual refactoring. In ActionBridge, if your local context and Tickets are highly descriptive, you can literally highlight the entire directory, press `Delete`, and simply re-activate all the Tickets. The AI agents will read the precise rules, intents, and constraints, and perfectly reconstruct the entire module from scratch, conforming to the new architectural rules.
-    
 - **Benefits:**
     - **Zero Technical Debt:** Code never has time to "rot." If it gets messy, you don't refactor it; you refine the rules and regenerate it perfectly clean.
     - **Absolute Developer Confidence:** The fear of breaking legacy code vanishes when you know the code is just a transient output that can be reliably rebuilt on demand.
