@@ -1,30 +1,38 @@
 # ActionBridge
+
 ## Overview
-ActionBridge introduces a structured, simple file-system-based workflow for **AI assisted large-scale software development**. Its goal is to optimize AI agents context and workflow to deliver the most reliable results in complex codebases. It is designed to power a new class of architecture dedicated to AI-assisted LOB (Line of Business) software development.
+
+ActionBridge introduces a structured, simple, file-system-based workflow for **AI-assisted, large-scale software development**. Its goal is to optimize AI agents' context and workflow to deliver the most reliable results in complex codebases. It is designed to power a new class of architecture dedicated to AI-assisted LOB (Line of Business) software development.
+
 ## Why?
+
 The foundational premise of ActionBridge is that applying LLMs to traditional software architectures—systems inherently designed _by_ humans, _for_ humans—is fundamentally flawed. When unleashed on medium-to-large legacy codebases, AI inevitably triggers context hallucinations, code duplication, silent bugs, and eventual code collapse.
 
-Currently, the only viable workaround is a rigidly step-by-step, highly localized, and deeply human-reviewed programming workflow. However, as codebase size and complexity grow, developer confidence plummets. This creates a critical paradox: the lightning-fast speed of AI code generation induces an overwhelming, counterproductive bottleneck in human review.
+Currently, the only viable workaround is a rigidly step-by-step, highly localized, and deeply human-reviewed programming workflow. However, as codebase size and complexity grow, developer confidence plummets. This creates a critical paradox: the lightning-fast speed of AI code generation induces an overwhelming, counterproductive bottleneck in human review. In the past, developers knew what was in the code, how it worked, and the root of the design choices. Now, AI decides and writes the code, while developers simply push it. What is seen as a productivity gain becomes a knowledge debt.
 
-We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand human chaos?"_ Instead, it is about asking, _"How do we enhance the software architectures to perfectly align with what LLMs are actually capable of producing?"_
+We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand human chaos?"_ Instead, it is about asking, _"How do we enhance software architecture to perfectly align with what LLMs are actually capable of producing?"_
 
 The next generation of software architecture must be explicitly designed for **AI-assisted development**. Boilerplate and glue code must be abstracted away from the AI's scope, allowing the models to focus entirely on specific business domains and distinct functional aspects.
 
-In this new paradigm, large projects are built using **vertical modularization** (e.g., Sales, Users, Orders, Shipping) intersecting with **horizontal layers** (UI Components, UI State, Domain Logic, Read Models, and Asynchronous Services).
+In this new paradigm, large projects can be built using **vertical modularization** (e.g., Sales, Users, Orders, Shipping) intersecting with **horizontal layers** (UI Components, UI State, Domain Logic, Read Models, and Asynchronous Services).
 
 The intersection of a vertical slice and a horizontal layer forms a **Cell**. Because Cells can encapsulate other Cells, the architecture is inherently fractal. Source code is distributed across separate projects, and within each project, every aspect is organized into deep directory trees.
 
 Crucially, each Cell completely hides its internal data structures, processes, and logic, exposing only a strict, reduced set of abstractions:
+
 - **Commands** (what the Cell can do) and **Read Models** (what data it exposes).
+    
 - **States** (what the UI must render) and **Actions** (what the State can process).
+    
 - **Jobs** (what background operations a service can perform), **JobStatus**, and **JobResult**.
     
-In such an architecture, at any given level, only the abstractions of the underlying components are visible to the outside world. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). We believe this strict encapsulation is the necessary foundation for next-decade, large-scale LOB (Line of Business) systems.
+In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components are unknown. The context is a space limited by its dependencies, public capabilities, and published artifacts. Each encapsulating component acts purely as a transformer (aggregating, rebuilding, composing) or a filter (passing data upward). This limited context provides the exact space where an AI Coding Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort. We believe this strict encapsulation is the necessary foundation for next-decade, large-scale LOB systems.
 
-_(**Note**: A groundbreaking, dedicated .NET persistence technology implementing an Entity Component System (ECS) tailored for LOB software is currently in development to natively support this model)._
+This kind of architecture needs new approaches to software design. It requires new technical foundations: persistence, database concepts, communication, and distribution across servers must evolve to materialize such an architectural shift. A groundbreaking, dedicated distributed .NET persistent memory model technology implementing an Entity Component System (ECS) tailored for LOB software is currently in development to natively support this model at scale.
 
-While ActionBridge is perfectly cohesive with this new fractal architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project to drastically enhance the predictability, quality, and robustness of AI-generated code.
+While ActionBridge is perfectly cohesive with this new fractal architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability, quality, and robustness of AI-generated code.
 ## The Agentic Solution
+
 If you try to build a single AI Agent to handle all the specifications, rules, and technologies—while expecting it to understand both the macro-architecture and the micro-details of each **Cell**—its context window becomes overwhelmingly large. This context bloat induces "hallucinations" and paralyzes the model's reasoning capabilities.
 
 Furthermore, if you attempt a "one-shot" implementation using a traditional persistent Orchestrator-to-Worker swarm, the conversational memory for both agents grows indefinitely. As the chat history fills with dead ends and debugging loops, the AI's attention mechanism decays. This inevitably leads to massive, silent code collapse and insurmountable technical debt.
@@ -41,23 +49,82 @@ ActionBridge abandons the persistent "chat" paradigm. Instead, it introduces a d
     
 - **Serialize the Workflow by Branch:** Blindly fusing AI-generated code across a massive project is an intensive, token-burning process that guarantees merge conflicts and compiler crashes. ActionBridge supports global parallelization, but uses a simple, intuitive compartment system to serialize execution _within_ a branch. By utilizing the directory tree to establish hierarchical locking points, it entirely avoids code-fusion conflicts.
 ## How it Works
+
 **ActionBridge** leverages the local file system as a database, message broker, and state machine, allowing multiple AI agents to be invoked to perform iterative programming work. Built around a **CLI-first architecture** (`bridge.exe`), ActionBridge acts as the glue between user intent and LLM coding tools:
 - **Signals:** On one side are Signals. A Signal is a JSON file containing a file path, a line number, and a text extraction, which serves as the starting point for an operation. Signals can be generated directly from the code editor using custom IDE extensions for VS Code or Visual Studio.
-- **Coding Tools:** On the opposite side is the LLM coding tool, such as **Antigravity**, **Claude Code**, or any CLI-based LLM runner.
+- **Coding Tools:** On the opposite side is the LLM coding tool, such as **Goose**, **Claude Code**, or any CLI-based LLM runner.
 - **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
 - **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
 ## Workflow
+
 In the IDE, in the source editor for a specific file, right-click permit to call the Bridge plug-ins command "Create a signal". It create a **Signal** JSON file containing (1) the file path, (2) the line number of the caret, and (3) the selected text in the editor.
 
 In the **Dashboard** application UI, this **Signal** files are stacked as inputs data. This inputs can be selected to build a **Ticket**, a prompt to send to the LLM tool to plan a given programming work. To do it, there is a list of the various **Agents** seen from the main selected path. Under each agent, the defined **Actions** are listed. You can select an **Action** or write a prompt yourself. The prompt is previewed immediately with the **Agent** specific context. It can be manually edited too. Then you can click "Run". The pending **Ticket** is sent to the LLM coding tool if there no existing **Ticket** pending or in process. The **Ticket** is converted in **Tasks** by the LLM Coding Tool, then this **Tasks** are send to the LLM Coding Tool for execution.
 
 When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
+Here is a deep, structured expansion of the "What does it change?" section. It breaks down your core ideas into distinct sub-concepts, provides concrete examples, and highlights the specific benefits of this architectural shift to make your vision clear and compelling.
+## What Does This Change?
+
+ActionBridge fundamentally shifts the developer's role from writing and maintaining source code to defining and refining intent, rules, and context. By treating code as a temporary byproduct of highly localized knowledge, it introduces a completely new paradigm for software engineering.
+
+Here is a deep dive into the core concepts driving this change.
+### 1. Fractal Prompt Building: Contextual Locality
+
+In traditional AI coding workflows, the agent is often fed an overwhelming amount of global context, most of which is irrelevant to the specific task. Fractal Prompt Building mimics the mental model of an expert human developer by strictly isolating context based on location in the architecture.
+
+- **The Sub-Concept:** Context is aggregated hierarchically from the root of the project down to the specific file. An agent working deep within a specific folder only sees the global rules that cascade down, combined with the hyper-specific rules of its current directory.
+    
+- **Example:** If an AI agent is tasked with modifying a front-end `SubmitButton` component, it inherits global UI design tokens and the local state-management rules of that specific form. It is _completely blind_ to the database schema, the background message queue policies, or the Order module's business logic.
+    
+- **Benefits:**
+    
+    - **Zero Context Bloat:** By starving the AI of irrelevant information, you preserve its reasoning capabilities and maximize its effective context window.
+        
+    - **Eradication of Hallucinations:** The agent cannot accidentally invent dependencies or call unauthorized backend services if it doesn't even know they exist.
+        
+### 2. Iterative Context Enhancement: The Knowledge Base as the Source of Truth
+
+Traditionally, documentation rots because it is secondary to the code. In the ActionBridge workflow, the local context, business rules, constraints, and documentation _drive_ the code generation. Therefore, refining the context is the primary development activity.
+
+- **The Sub-Concept:** Developers iterate on the local AI context as intensively as they used to iterate on source code. By adding branch-specific specifications, constraints, and historical ticket summaries, developers step-by-step build a localized knowledge base that acts as a perfect mirror of the desired code state.
+    
+- **Example:** A developer notices the AI generated a component that doesn't handle edge-case error states correctly. Instead of manually editing the code to fix the bug, the developer adds a rule to the local `context.md` file: _"All UI components in this directory must explicitly handle and render `TimeoutException` states."_ The Ticket is then rerun, and the AI generates the correct code.
+    
+- **Benefits:**
+    - **Living Documentation:** The documentation is inherently kept up to date because if it isn't, the AI cannot generate the correct code.
+    - **Compounding Value:** Every rule added to the context makes all future AI operations in that directory smarter, safer, and more predictable.
+        
+### 3. The Ticket as a "Distance Reduction" Engine
+
+ActionBridge treats Tickets not as static prompts, but as dynamic state evaluators. A Ticket continuously compares what the user wants (Intent) with what actually exists in the files (Code Reality).
+
+- **The Sub-Concept:** The goal of a Ticket is simply to emit the exact sequence of Tasks required to reduce the distance between the intent and the current reality to zero.
+    
+- **Example:** You have a Ticket titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 10 tasks to create files, write logic, and map models. If you reactivate the exact same Ticket a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits only 2 tasks to update the specific API mappings.
+    
+- **Benefits:**
+    - **Idempotent Execution:** You can safely rerun Tickets. If the code already matches the intent, the AI will evaluate the state and do nothing.
+    - **Automated Refactoring:** Reactivating old Tickets against a newly updated foundational architecture forces the AI to bridge the gap and automatically update the local code to match new global standards.
+        
+### 4. The Ultimate Goal: The "Delete and Rebuild" Paradigm
+
+When local, branch-specific contextual guidance, business rules, and documentation achieve a high enough descriptive power, the source code itself loses its sacred status.
+
+- **The Sub-Concept:** Source code becomes a completely disposable, temporary artifact. The true asset of your software is the recursively aggregated definitions and intents.
+    
+- **Example:** Imagine realizing a foundational design flaw in a massive legacy module. In a traditional codebase, this means months of risky, manual refactoring. In ActionBridge, if your local context and Tickets are highly descriptive, you can literally highlight the entire directory, press `Delete`, and simply re-activate all the Tickets. The AI agents will read the precise rules, intents, and constraints, and perfectly reconstruct the entire module from scratch, conforming to the new architectural rules.
+    
+- **Benefits:**
+    - **Zero Technical Debt:** Code never has time to "rot." If it gets messy, you don't refactor it; you refine the rules and regenerate it perfectly clean.
+    - **Absolute Developer Confidence:** The fear of breaking legacy code vanishes when you know the code is just a transient output that can be reliably rebuilt on demand.
 # Components
 ## Four components goals
+
 - **The Bridge Shell** : it is a library of methods for file management and workflow control. This shell is encapsulated in the `bridge.exe`, a CLI tool that can be called by any system - external tools or AI Agents. The Bridge can call the LLM Coding Tool to execute both Tickets and Tasks.
 - **The Signalling tools** : it is a peace of software used to create Signals. A Signals file record a file path, a line number and a text.  Signals are written in a dedicated directory, and can be created by a IDE plug-in (Visual Studio, VS Code).
 - **The Dashboard** : it is background application that implement a Web UI to manage the whole system : configure projects, create agents, define actions, list Signals, create Tickets and manage tasks completion.
 ## File System
+
 **ActionBridge** use only files and directory to store data, configurations and manage workflows. No database, no external state management. All configurations, Tickets and Tasks are stored in `.bridge` directories. There is not one, single `.bridge` directory per project, but many. They are disseminated in the project directory tree to personalize rules, instructions, agents, actions.
 
 Each `.bridge` directory can be compliant to few conventions :
@@ -82,6 +149,7 @@ Each `.bridge` directory can be compliant to few conventions :
 `.bridge/Signals/`
 # Agent Definitions
 ## Prompt Aggregation Convention
+
 When building a Ticket using the Dashboard, the bridge shell will perform a prompt aggregation. This is based on the exploration of local `.bridge` directory to concatenate the various part of the Ticket prompt. There is few naming conventions :
 - `_start.md` : all time concatenated first.
 - `*.md`
@@ -102,6 +170,7 @@ Directories and content :
 **Result prompt** from `"SubProject"` : (S0 + S1 + S2) + P0 + R1 + R2 + (E2 + E1 + E0)
 **Caution** :  note that **ends** are reversed (E2 + E1 + E0), like brackets in code.
 ## The Resulting Rules
+
 What is important to understand is that the "one-fit-all" is seen as a deceptive way to define the development process. Specialized Agent with a "know-all" strategy is not efficient in large code base. This recursive approach permit foundational, per domain and aspect adaptations and optimizations.
 ### Specialized Agents
 Agents can be defined at any point in the project tree : specific agents can be defined locally to a project, or to a branch in a project, to perform really specific tasks. In any case, they will inherit of prompt defined directly in the `Agents` directories of parent `.bridge` directories.
@@ -149,6 +218,7 @@ $endif
 ```
 # Workflow System
 ## File Name Conventions
+
 The cinematic of the workflow is this one :
 - A Ticket is created using the Dashboard (or any other tool, or by an IA Coding Tool) in the `/Tickets/` directory. The ticket file name is made to avoid conflit and respect oredring sequance : "Ticket_00001.md"
 - An AI Coding Tool is invoked with the Ticket content and follow instructions. His goal is to create few Tasks that contribute to reach the defined intent :
@@ -178,6 +248,7 @@ The cinematic of the workflow is this one :
 	- `Summary_Index.md`
 # Default Agents
 ## Minimal Workflow
+
 ActionBridge need few default Agents to makes work done :
 - `Dev` : for every coding Ticket.
 - `Reviewer` : Tickets to critics the written code and generate new fixing tasks.
@@ -189,23 +260,6 @@ ActionBridge need few default Agents to makes work done :
 ### Find The Root
 ```c#
 string GetRootBridge(string fromPath);
-string GetNearestBridge(string fromPath);
-IEnumerable<string> GetFromNearestToRootBridges(string fromPath);
-int CreateSignal(string fromFile, int line, string text);
-IEnumerable<int> ListSignalsIds(string fromPath);
-int GetNextSignalId(string fromPath);
-int GetNextTicketId(string fromPath);
-
-int CreateTickedFromPrompt(string fromPath, string prompt);
-int CreateAgentTickedFromPrompt(string fromPath, string agent, string prompt);
-int CreateAgentTickedFromOneAction(string fromPath, string agent, string action, param int[] signals);
-
-string ValidateTicket(int ticketId);
-
-string CreateTask(int ticketId, string prompt);
-string CreateAgentTaskFromPrompt(int ticketId, string agent, string prompt);
-string CreateAgentTaskFromOneAction(int ticketId, string agent, string action, param int[] signals);
-
 ```
 
 ## 🤝 Contributing

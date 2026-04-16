@@ -1,4 +1,6 @@
-﻿namespace ActionBridge.Persistence.Configurations.Manager
+﻿using ActionBridge.Values;
+
+namespace ActionBridge.Persistence.Configurations.Manager
 {
     /// <summary>
     /// Settings of a code repository, located at the root path od the project.
@@ -10,6 +12,6 @@
 
     public class ProjectRecord
     {
-        public DirectoryPath RootDirectoryPath { get; set; } = string.Empty;
+        public DirectoryPath RootDirectoryPath { get; set; } = new DirectoryPath();
     }
 }

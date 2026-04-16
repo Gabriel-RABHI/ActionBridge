@@ -9,11 +9,4 @@ namespace ActionBridge.Persistence.Configurations.Bridge
 
         public string Description { get; set; } = string.Empty;
     }
-
-    public class ProjectRootStates
-    {
-        public TicketId TopTicketId { get; set; } = new TicketId();
-
-        public SignalId TopSignalId { get; set; } = new TicketId();
-    }
 }
