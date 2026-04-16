@@ -62,7 +62,17 @@ In the IDE, in the source editor for a specific file, right-click permit to call
 In the **Dashboard** application UI, this **Signal** files are stacked as inputs data. This inputs can be selected to build a **Ticket**, a prompt to send to the LLM tool to plan a given programming work. To do it, there is a list of the various **Agents** seen from the main selected path. Under each agent, the defined **Actions** are listed. You can select an **Action** or write a prompt yourself. The prompt is previewed immediately with the **Agent** specific context. It can be manually edited too. Then you can click "Run". The pending **Ticket** is sent to the LLM coding tool if there no existing **Ticket** pending or in process. The **Ticket** is converted in **Tasks** by the LLM Coding Tool, then this **Tasks** are send to the LLM Coding Tool for execution.
 
 When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
+## The Recursive View
 
+In the Dashboard, the visible Agents is the one found in a recursive scan from the selected file point to the root directory of the project. The same principle apply to Actions and prompt component file. This materialize the foundational, per domain and aspect adaptations and optimizations of the context. It can be used for many adaptations, including :
+
+- **Specialized Local Agents** : Agents can be defined at any point in the project tree. Specific agents can be defined locally to a project, or to a branch in a project, to perform really specific tasks. In any case, they will inherit of prompt defined directly in the `Agents` directories of parent `.bridge` directories.
+
+- **Agent Local Enrichment** : For any existing Agent, local directive can be added for better local results. It permit to build a rich but selective context. A `SeniorDev` Agent defined at the root of the project can integrate a new local `.bridge/Agents/SeniorDev/ui_components.md` file in his prompt. This new, local directives are not the same in the Web UI directories and in the Data Access directories.
+
+- **Specific Actions** : Many actions can be defined locally. They can be generic or completely dedicated to a specific feature set or to the purpose of the branch source code. A logical suite of Action can become a "replayable" construction history steps. "Add Paypal as payment gate" can be a business oriented action.
+
+- **Globalization** : general purpose directives and generic actions are defined in the highest `.bridge` directories. The prompt aggregation logic permit to link operations or specify general purpose indications.
 ## What Does This Change?
 
 ActionBridge fundamentally shifts the developer's role from writing and maintaining source code to defining and refining intent, rules, and context. By treating code as a temporary byproduct of highly localized knowledge, it introduces a completely new paradigm for software engineering.
@@ -125,7 +135,7 @@ When local, branch-specific contextual guidance, business rules, and documentati
 
 ActionBridge’s initial implementation utilizes **Goose** (an open-source AI agent) as its primary LLM Coding Tool. This is a highly intentional choice driven by the need for absolute control over the AI's cognitive load.
 
-The overarching goal of ActionBridge is to drastically reduce context size and enforce hyper-specialization at the Ticket or Task level. Goose is uniquely suited for this because it allows for granular, dynamic control over the **system prompt** by letting us configure exactly which tools are exposed to the agent for any given task.
+The overarching goal of ActionBridge is to drastically reduce context size and enforce hyper-specialization at the Ticket or Task level. Goose is uniquely suited for this because it allows for granular, dynamic control over the **system prompt** by letting us configure exactly which tools are exposed to the agent for any given task. The tool set can be customized for a specific language too - the Roslyn based .Net MCP tool for code exploration and refactoring is a perfect example.
 
 By integrating ActionBridge's architecture with Goose, we achieve several critical breakthroughs:
 
@@ -182,15 +192,8 @@ Directories and content :
 
 **Result prompt** from `"SubProject"` : (S0 + S1 + S2) + P0 + R1 + R2 + (E2 + E1 + E0)
 **Caution** :  note that **ends** are reversed (E2 + E1 + E0), like brackets in code.
-## The Resulting Rules
 
-What is important to understand is that the "one-fit-all" is seen as a deceptive way to define the development process. Specialized Agent with a "know-all" strategy is not efficient in large code base. This recursive approach permit foundational, per domain and aspect adaptations and optimizations.
-### Specialized Agents
-Agents can be defined at any point in the project tree : specific agents can be defined locally to a project, or to a branch in a project, to perform really specific tasks. In any case, they will inherit of prompt defined directly in the `Agents` directories of parent `.bridge` directories.
-### Agent Local Enrichment
-For any Agent, local directive can be added for better local results. It permit to build a rich but selective context. Exemple : a `SeniorDev` Agent is defined at the root of the project. But a new `.bridge/Agents/SeniorDev/_start.md` file can be added in various place to makes this same Agent to have more directives. This directives are not the same in the Web UI parts and in the Data Access layers.
-### Globalization
-General purpose directives are defined in the highest .bridge directories. `_end.md` permit to link operations or specify general purpose indications. It can contains an instruction to start a new Tickets.
+Note that the `_end.md` files permit to chain operations by starting new Tickets or new Tasks.
 # Action Definitions
 ### Templating
 Actions are predefined prompts that describe a task to be done. They support templating by inserting datas that comes from the **Signal** files records :
