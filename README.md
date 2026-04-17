@@ -2,13 +2,17 @@
 
 ## Overview
 
-ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing Hierarchical, Fractal Prompt Building, it aggressively optimizes AI agent context and execution, delivering better results within complex codebases.
+ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing Hierarchical, Fractal Prompt Building, it aggressively optimizes AI agent context and execution, delivering better results within complex codebases. It treats code as a temporary, replaceable artifact.
 
 ActionBridge was born as the logical continuation of a deeper architectural technology: **Ghost Body Object (GBO)**. While GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers, ActionBridge is the Agentic Framework built to leverage GBO's benefits.
 
-However, ActionBridge is entirely agnostic; it treats code as a temporary, replaceable artifact and its workflow can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
+However, ActionBridge is entirely agnostic. It is independent from the GBO technology, don't need it and do not use it. Its workflow can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
 
-> NOTE : The **Ghost Body Object** (GBO) technology isn't just a prototype - it's the result of 15 years of relentless trial, testing, and refinement. It powers a mission-critical healthcare system across 450 production instances since 2022. It is used for a complex event-sourced LOB applications since 2023. The upcoming published release is the fifth major iteration, extracting battle-tested principles into a generalized, high-performance infrastructure for the .NET ecosystem.
+> NOTE : The **Ghost Body Object** (GBO) technology isn't just a prototype - it's the result of 15 years of relentless trial, testing, and refinement. It powers a mission-critical healthcare system across 450 production instances since 2022. It is used for a complex event-sourced LOB applications since 2023. The upcoming published release is the fifth major iteration, extracting battle-tested principles into a generalized, high-performance infrastructure for the .NET ecosystem. 
+> 
+> By implementing an Entity Component System (ECS) backed by Event Sourcing (or Mutation Sourcing) specifically tailored for LOB software, this architecture entirely obsoletes traditional DBMS, ORMs, Message Brokers, Caches and integration tests.
+> 
+> The result is a codebase that is at least three times smaller than an average LOB solution. System complexity and unintended side effects are reduced by an order of magnitude—a reduction tangibly measured by the lower LLM token consumption required to implement any given feature.
 ## Why?
 
 The foundational premise of ActionBridge is that applying LLMs to traditional software architectures—systems inherently designed _by_ humans, _for_ humans—is fundamentally flawed. When unleashed on medium-to-large legacy codebases, AI inevitably triggers context hallucinations, code duplication, silent bugs, and eventual code collapse.
@@ -43,7 +47,7 @@ Crucially, each Cell completely hides its internal data structures, processes, a
 In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components remain unknown. The context is a space limited entirely by its dependencies, public capabilities, and published artifacts.
 
 This limited context provides the exact boundary where an ActionBridge AI Agent can specialize in generating code using a significantly smaller context window and reduced reasoning effort. The extreme simplification achieved by GBO is tangibly measured by the vastly lower LLM token consumption ActionBridge requires to implement any given feature.
-## The Enhanced Legacy
+## The Enhanced Legacy Now
 
 While ActionBridge is perfectly cohesive with this new Cell oriented architectural model, it is entirely agnostic. It can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
 
