@@ -4,7 +4,7 @@
 
 ActionBridge introduces a structured, file-system-based workflow for large-scale, AI-assisted software development. By utilizing Hierarchical, Fractal Prompt Building, it aggressively optimizes AI agent context and execution, delivering better results within complex codebases.
 
-ActionBridge was born as the logical continuation of a deeper architectural project: **Ghost Body Object (GBO)**. While GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers, ActionBridge is the Agentic Framework built to leverage GBO's benefits.
+ActionBridge was born as the logical continuation of a deeper architectural technology: **Ghost Body Object (GBO)**. While GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers, ActionBridge is the Agentic Framework built to leverage GBO's benefits.
 
 However, ActionBridge is entirely agnostic; it treats code as a temporary, replaceable artifact and its workflow can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
 
