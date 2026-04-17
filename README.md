@@ -7,6 +7,8 @@ ActionBridge introduces a structured, file-system-based workflow for large-scale
 ActionBridge was born as the logical continuation of a deeper architectural project: **Ghost Body Object (GBO)**. While GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers, ActionBridge is the Agentic Framework built to leverage GBO's benefits.
 
 However, ActionBridge is entirely agnostic; it treats code as a temporary, replaceable artifact and its workflow can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
+
+> NOTE : The **Ghost Body Object** (GBO) technology isn't just a prototype - it's the result of 15 years of relentless trial, testing, and refinement. It powers a mission-critical healthcare system across 450 production instances since 2022. It is used for a complex event-sourced LOB applications since 2023. The upcoming published release is the fifth major iteration, extracting battle-tested principles into a generalized, high-performance infrastructure for the .NET ecosystem.
 ## Why?
 
 The foundational premise of ActionBridge is that applying LLMs to traditional software architectures—systems inherently designed _by_ humans, _for_ humans—is fundamentally flawed. When unleashed on medium-to-large legacy codebases, AI inevitably triggers context hallucinations, code duplication, silent bugs, and eventual code collapse.
