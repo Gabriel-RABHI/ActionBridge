@@ -295,7 +295,7 @@ The cinematic of the workflow is this one :
 - `Tickets` :  a work item to be converted in Tasks.
 	- `Ticket_XXXXX.md` : is currently written by a process, to be processed.
 	- `Ticket_XXXXX.rejected.md` : rejected by something. Contains the reason for rejection.
-	- `Ticket_XXXXX.decision.md` : blocked. Contains the questions.
+	- `Ticket_XXXXX.request.md` : blocked. Contains a questions for humans or orchestrators.
 	- `Ticket_XXXXX.closed.md` : the Coding Tool consider the goals reached or complete failure.
 
 - `Tasks` : a task to be done.
