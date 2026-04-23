@@ -2,31 +2,106 @@
 
 ## Overview
 
-The most reliable way of building softwares using AI Coding Agent, is to request small step works, one by one. This works are usually done in a limited number of places in the source code. Shorter is prompt, better is the result.
-
-ActionBridge introduces a structured, file-system-based workflow based on a Hierarchical, Fractal Prompt Building deterministic principle. This principle aggressively optimizes AI agent context and execution, delivering better results within complex code bases.
+The most reliable way to build software using AI coding agents is to request work in small, incremental steps executed within a highly scoped context. Prompts must be highly descriptive and precise, yet completely devoid of irrelevant noise. ActionBridge introduces a structured, file-system-based workflow built on the principle of **Hierarchical Context Cascading**. This principle aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, delivering superior results within complex codebases.
 ### The Basics
 
-Any large code base is generally divided in multiple projects. Each project contains a deep hierarchy of directories containing the source code. The concept of ActionBridge is to have multiple agents definition and context, stored in specific directories in the directory hierarchy of the project, alongside the source code :
-- Some directories contains specifications.
-- Others contains the workflow items.
+Any large codebase is typically divided into multiple projects, each featuring a deep directory hierarchy housing the source code. The core concept of ActionBridge is to store agent definitions, contexts, and rules in specific folders within this hierarchy, directly alongside the source code they pertain to.
 
-A agent that work in the data access layer do not need the same rules, guidelines, documentation than the one working in the user interface. But all agents working on unit testing can have a set of rules and guidelines in common, with distincts one for testing data layer and testing a specific service layer. Even the tool set, MCP and Skill are not the same.
+An agent working in the data access layer does not need the same rules or documentation as an agent working on the user interface. However, all agents working on unit testing might share a common baseline of rules while inheriting specific guidelines depending on their local directory. Even the toolsets, Model Context Protocols (MCPs), and Skills will vary by location.
 
-We all know that more precise, contextualized and compact is the context of an coding agent, better is the generated code. That's why, using ActionBridge, any task or intent, is defined from one or few stating points in the source code : this staring points are used to build the optimal context, agent definition, rules, guidelines, tool set or documentations for this particular source code hierarchy branch.
-### Spec Driven
+It is well established that the more precise, localized, and contextually dense an AI's prompt is, the better the generated code will be. When using ActionBridge, any task is defined from specific starting points within the source code tree. These starting points dynamically build the optimal context, guidelines, and documentation strictly for that specific branch.
+### Spec-Driven Development
 
-ActionBridge is following the spec driven trend. It is done to build a complete, high quality, localized specification system in an iterative, emergent process. Developpers can use it in two way :
-- **Coding Assistant**: it permit to process work items using a explicit programming work delegation. It is the most common Coding Assistant tool usage.
-- **Specification Driven Development**: In a such workflow, the developer is only editing the specifications. The source code is the result of the LLM work, or a collaborative process between spec driven code generation and humans instructions. In a more radical shift, it can makes the source code a final stage artifact you can delete and rebuild, partially or completely, by logical feature set or aspect in the complete project. 
+ActionBridge is designed to build a complete, high-quality, localized specification system through an iterative, emergent process. Developers can utilize it in two primary ways:
 
-ActionBridge is deeply configurable. The default configuration elaborate three distincts spaces as a starting point :
-- **The Specification Space**: contains all the inputs to orchestrate the workflow and give the Agents goals, guidelines, knowledge, prompts and documentations. It contains the repeatable development plan elements, the `Intents`. This is where information is queried to know what (the `Intents`), where (the directory as location) and how (the workflow) to build the product.
-- **The Workflow Space**: contains the transient work items, Tickets and Tasks. When used as Coding Tool, user work items are directly created as Tickets. But the Tickets can reference, extract, use any specification file.
-- **The Deliverable Space**: everything that must live without the specification and workflow spaces, like source code, testing code or the public documentations.
+- **Coding Assistant:** Processing transient work items using explicit programming delegation, similar to traditional AI coding tools.
+    
+- **Specification-Driven Development:** The developer focuses entirely on editing specifications. While treating source code as a purely disposable artifact is a radical, long-term directional goal, practically, this approach allows the specifications to act as the ultimate source of architectural and business truth. The LLM acts as the execution engine that handles syntactic implementation, making the source code a highly malleable output that effortlessly adapts as the specifications evolve.
+    
+### The Three Spaces
 
-In other words, the Specification Space contains the recipe. There is the needed ingredients and the steps needed to prepare the Deliverable - the `Intents`. Each `Intent` use a subset of ingredients. User can directly create the Tickets, or let an agent analyse the Intents to generate the Tickets. Generate the Deliverable is a matter of observing what is existing in Deliverable Space, the specifications, and start a workflow to makes the Deliverable Space the most cohesive with the Specification Space. Both **Coding Assistant** usage and **Specification Driven Development** approaches relie on the same principle : add, modify or remove source code to reduce the distance between the specifications and deliverables.
-### The Hierarchical, Fractal Prompt Building
+ActionBridge minimizes bureaucratic overhead by strictly separating persistent architectural truth from disposable execution steps. The default configuration establishes three distinct spaces:
+
+- **The Specification Space (Persistent):** This is the authoritative core of the system. It contains the overarching **Intents** (large-scale descriptions of what must be built) and the **Requirements**. A Requirement is highly flexible; it can dictate extremely precise technical details or outline broad business rules. Ultimately, a Requirement is simply a _“thing that must be true.”_ This space acts as the project's recipe, holding the ingredients (guidelines, rules, knowledge) and the permanent goals.
+    
+- **The Workflow Space (Transient):** This space handles execution without cluttering the project's long-term memory. It contains ephemeral work items: **Tickets** and **Tasks**. Tickets reference specific Requirements and are broken down into granular Tasks (the actual programming instructions). Because they are purely transient, once a Task is completed, these items can and should be deleted, ensuring developer velocity remains high.
+    
+- **The Deliverable Space (Output):** Contains the tangible results that must exist independently of the workflow, such as the actual source code, testing suites, or public documentation.
+    
+### The Generation Chain
+
+This system naturally forms a clear, cascading generation chain: `Intents` -> `Requirements` -> `Tickets` -> `Tasks`.
+
+Crucially, ActionBridge allows the developer to enter this chain at any level of abstraction, delegating the remaining downward steps to the AI agents. You can scale the AI's autonomy based on your immediate needs:
+
+- **Manual Execution:** The developer creates **Tasks** directly to execute specific programming instructions, maintaining granular control over the immediate code generation.
+    
+- **Delegated Planning:** The developer creates **Tickets**, allowing an Agent to plan the work and automatically break it down into actionable Tasks.
+    
+- **Automated Workflow:** The developer defines the **Requirements**. Agents then read these rules to create the necessary Tickets, which subsequently generate the execution Tasks.
+    
+- **Full Orchestration:** The developer focuses solely on high-level **Intents**. Agents take over entirely to align and generate the Requirements, cascade them into Tickets, and finally execute the Tasks.
+    
+Regardless of where the developer chooses to intervene, generating the final deliverable relies on the same core principle: observing what currently exists in the Deliverable Space, checking it against the Specification Space, and spinning up a transient workflow to make the code perfectly reflect the things that must be true.
+### Logical Ordering
+
+You can instruct ActionBridge to process a single item, a series of items, or all items. `Requirements` are processed in a specific order. Each one is assigned a unique number at the project level. Just like `Requirements`, `Tickets` and `Tasks` are also assigned unique numbers upon creation.
+
+`Requirements` form a persistent, logical series that can be executed one by one to generate `Tickets`, and subsequently `Tasks`, to perform the actual programming work. Developers can insert new `Requirements` anywhere in the chain. However, the complete `Requirement` chain must remain logically coherent. For instance, a `Requirement` instructing the system to build a user management module must be positioned before a `Requirement` that adds a specific rule for user accounts.
+
+### A "Distance Reduction" Engine
+
+When processing an `Intent`, the LLM is instructed to verify whether the existing `Requirements` align with the `Intent`'s content. If a `Requirement` is not cohesive with the `Intent`, it is corrected. Furthermore, a new `Requirement` can be generated if a specific aspect of an `Intent` is not yet represented.
+
+When processing a `Requirement`, the LLM reads the source code to evaluate whether the requirement is currently met. If the source code does not align with the `Requirement`, `Tickets` are generated to describe the necessary changes.
+
+A `Ticket` acts as a dynamic state evaluation request. During the processing of a `Ticket`, the LLM compares the `Ticket`'s content with what actually exists in the files (the source code reality). The goal of a `Ticket` is simply to emit a sequence of `Tasks` required to reduce the distance between the ticket's intent and the current reality to zero. The LLM can achieve this in multiple steps—it does not have to emit the complete, exact list of `Tasks` all at once. For example, it can emit 3 `Tasks`, re-evaluate the state, emit 2 more `Tasks`, evaluate again, emit 1 final `Task`, and then validate the `Ticket` as complete.
+
+- **Example:** You have a `Ticket` titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 4 tasks to create files, write logic, and map models. If you change the `Requirements` a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits a new `Ticket`, followed by 2 tasks to update the specific API mappings.
+    
+- **Benefits:**
+    
+    - **Idempotent Execution:** You can safely rerun `Requirements` or `Tickets`. If the code already matches the intents, the AI will evaluate the state and do nothing.
+        
+    - **Automated Refactoring:** Reactivating old `Requirements` against a newly updated foundational architecture forces the AI to bridge the gap and automatically update the local code to match the new global standards.
+        
+### Workflow Summary
+
+A summary of the complete workflow:
+
+- **Vibe Coding**: Create work items as `Intents` in the Specification Space. ActionBridge will then generate, modify, or expand the `Requirements`. New `Tickets` and `Tasks` may be generated and processed.
+    
+- **Requirement-Driven Coding**: Create a logical, ordered chain of `Requirements`. ActionBridge will verify that the chain is coherent. If valid, it generates the necessary `Tickets`.
+    
+- **Ticket-Driven Coding**: Create a `Ticket`. The resulting `Tasks` serve as complete prompts, containing exactly what the LLM needs to reduce the distance between the code reality and the intent.
+    
+- **Execute Tasks**: Create a `Task` to be executed immediately.
+    
+As a developer, you can mix and match all four of these approaches within this ActionBridge configuration.
+### Bidirectional State Reconciliation
+
+ActionBridge operates as a bidirectional state reconciliation engine. While the standard flow cascades down from Specifications to Deliverables, the system can also run in reverse to verify that actual code behaviors and implemented rules remain perfectly reflected in the `Requirements`.
+
+If a developer introduces a manual change directly into the business logic, this triggers a back-propagation of the source code reality into the Specification Space. When executed, this back-propagation ensures the `Requirements` remain the genuine, ultimate source of truth by forcing them to adapt to the actual, compiling source code.
+
+This reverse-sync unlocks powerful workflows. Developers can manually write or insert large portions of legacy code and instruct ActionBridge to automatically generate the underlying `Requirements`. Furthermore, this enables a continuous "round-trip" delta reduction loop: a developer can quickly draft poorly optimized code, use back-propagation to extract its logical intent into a `Requirement`, and then trigger a forward pass, instructing the AI to perfectly refactor and rewrite the code based on that newly minted specification.
+### Hierarchical Context Cascading
+
+In the directory hierarchy, the configuration define two directories :
+- `.specs` : this directories contains the specifications, including `Intents` and `Requirements`.
+- `.works` : this directories contains `Tickets` and `Tasks`.
+
+---
+---
+---
+
+
+> [!warning] WORK IN PROGRESS
+
+
+
+
+
 
 To build a prompt, ActionBrige find all `.specs` directories, and aggregate the request matching files. For a given Agent, it allows the LLM to discover only the most relevant, "need-to-know" local instructions—ensuring system prompt, tools (MCP, Skills), rules, guidelines, knowledge and documentation are injected exactly where they belong in the directory tree in a cumulative way.
 ### Stateless, Iterative Planning (The OODA Loop)
@@ -40,19 +115,7 @@ Then, **Tickets** are used to generate **Tasks**. When a **Ticket** is created, 
 The generated **Tasks** are "all-in-one" items executed by short-lived, highly specialized micro-agents dynamically configured by the `Planner`. These `Worker` agents wake up with a precise persona (e.g., "Blazor UI Expert"), execute the code, document their exact changes, and die. They never have to waste tokens reflecting on their broader purpose.
 
 When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
-### The Ticket as a "Distance Reduction" Engine
 
-A Ticket is a dynamic state evaluators request. A Ticket continuously compares what the user wants (Intent) with what actually exists in the files (source code reality). The goal of a Ticket is simply to emit the exact sequence of Tasks required to reduce the distance between the intent and the current reality to zero.
-
-- **Example:** You have a Ticket titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 10 tasks to create files, write logic, and map models. If you reactivate the exact same Ticket a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits only 2 tasks to update the specific API mappings.
-- **Benefits:**
-    - **Idempotent Execution:** You can safely rerun Tickets. If the code already matches the intent, the AI will evaluate the state and do nothing.
-    - **Automated Refactoring:** Reactivating old Tickets against a newly updated foundational architecture forces the AI to bridge the gap and automatically update the local code to match new global standards.
-
-The complete workflow overview is :
-- **Feed the Specification Space**: if you want a complete Agentic Vibe Coding workflow, create work-items as `Intents` in the Specification Space. This `Intents` are sorted, and express what must be done. They use any other Guideline, Rule, Documentation files to be interpreted as `Ticket`.
-- **Process Tickets to generate Tasks**. Each Ticket is processed by a new, fresh LLM session. Tasks are complete prompt containing exactly what is needed for the LLM to reduce the distance between the code reality and the Intent.
-- **Execute Tasks**. Each Task is executed by a fresh new Agent.
 ### Iterative Context Enhancement
 
 Traditionally, documentation rots because it is secondary to the code. In the ActionBridge workflow, the local Specification Space _drive_ the code generation. Therefore, refining the context is the primary development activity. Developers iterate on the local AI context as intensively as they used to iterate on source code. By adding branch-specific Specification Space artefacts (Tool-set, System Prompts, Agent Configuration, Guildelines, Rules, etc), and cherry pick historical ticket summaries, developers step-by-step build a localized knowledge base that acts as a perfect mirror of the desired code state.
@@ -166,19 +229,64 @@ Format
 
 ### Default Workflow Entities
 
-| Name   | Directory     | Format                 | State    | Agent          | Bridge  | Icon   | Color   | Tag      |
-| ------ | ------------- | ---------------------- | -------- | -------------- | ------- | ------ | ------- | -------- |
-| Ticket | Board/Tickets | `Ticket_{0000}`        |          |                | INPUT   | ticket |         |          |
-|        |               |                        | pending  | Agents/Planner | PENDING |        |         |          |
-|        |               |                        | rejected |                | ERROR   |        | orange  | stop     |
-|        |               |                        | request  |                | REQUEST |        | yellow  | question |
-|        |               |                        | closed   | Agents/Scrib   | DONE    |        |         | check    |
-| Task   | Board/Tasks   | `$Ticket$_Task_{0000}` |          |                |         | task   |         |          |
-|        |               |                        | pending  | Agents/Worker  | PENDING |        |         |          |
-|        |               |                        | wip      |                | WIP     |        | magenta |          |
-|        |               |                        | failled  |                | ERROR   |        | red     | warning  |
-|        |               |                        | done     |                | DONE    |        |         | check    |
+| Name   | Directory     | Format                      | State      | Agent           | Bridge  | Icon   | Color   | Tag      |
+| ------ | ------------- | --------------------------- | ---------- | --------------- | ------- | ------ | ------- | -------- |
+| Ticket | Board/Tickets | `Ticket_{0000}_{00}`        |            |                 | INPUT   | ticket |         |          |
+|        |               |                             | pending    | Agents/Planner  | PENDING |        |         |          |
+|        |               |                             | processing |                 | WIP     |        |         |          |
+|        |               |                             | rejected   |                 | ERROR   |        | orange  | stop     |
+|        |               |                             | request    |                 | REQUEST |        | yellow  | question |
+|        |               |                             | closed     | Agents/Scrib    | DONE    |        |         | check    |
+| Task   | Board/Tasks   | `$Ticket$_Task_{0000}_{00}` |            |                 |         | task   |         |          |
+|        |               |                             | pending    | Agents/Worker   | PENDING |        |         |          |
+|        |               |                             | processing |                 | WIP     |        | magenta |          |
+|        |               |                             | review     | Agents/Reviewer | PENDING |        |         |          |
+|        |               |                             | reviewing  |                 |         |        |         |          |
+|        |               |                             | rework     | Agents/Worker   | WIP     |        |         |          |
+|        |               |                             | failled    |                 | ERROR   |        | red     | warning  |
+|        |               |                             | done       |                 | DONE    |        |         | check    |
+
+### Agents/Planner
+
+`_begin.agent.md`
+```
+# Agent Definition
+You are the Ticket Planner.
+
+# Goal
+- Analyze the Ticket intent.
+- Check if the source code is doing the Ticket intent.
+	  - If the Ticket intent is not fullfill in the 
+```
+
+`_end.agent.md`
+```
+# Next Operations
+...
+```
+
 
 Key-Words
 
 `$AGENT <name>`
+
+
+
+| Name   | Directory     | Format                      | State      | Agent           | Bridge  | Icon   | Color   | Tag      |
+| ------ | ------------- | --------------------------- | ---------- | --------------- | ------- | ------ | ------- | -------- |
+| Ticket | Board/Tickets | `Ticket_{0000}_{00}`        |            |                 | INPUT   | ticket |         |          |
+|        |               |                             | pending    | *               | PENDING |        |         |          |
+|        |               |                             | processing |                 | WIP     |        |         |          |
+|        |               |                             | rejected   |                 | ERROR   |        | orange  | stop     |
+|        |               |                             | request    |                 | REQUEST |        | yellow  | question |
+|        |               |                             | closed     | Agents/Scrib    | DONE    |        |         | check    |
+| Task   | Board/Tasks   | `$Ticket$_Task_{0000}_{00}` |            |                 |         | task   |         |          |
+|        |               |                             | pending    | Agents/Worker   | PENDING |        |         |          |
+|        |               |                             | processing |                 | WIP     |        | magenta |          |
+|        |               |                             | review     | Agents/Reviewer | PENDING |        |         |          |
+|        |               |                             | reviewing  |                 |         |        |         |          |
+|        |               |                             | rework     | Agents/Worker   | WIP     |        |         |          |
+|        |               |                             | failled    |                 | ERROR   |        | red     | warning  |
+|        |               |                             | done       |                 | DONE    |        |         | check    |
+
+### Agents/Planner
