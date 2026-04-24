@@ -34,7 +34,7 @@ This system naturally forms a clear, cascading generation chain: `Intents` -> `R
 
 ```mermaid
 flowchart LR
-Intents(round) --> Requirements(round) --> Tickets(round) --> Tasks(round)
+Intents --> Requirements --> Tickets --> Tasks
 ```
 
 Crucially, ActionBridge allows the developer to enter this chain at any level of abstraction, delegating the remaining downward steps to the AI agents. You can scale the AI's autonomy based on your immediate needs:
