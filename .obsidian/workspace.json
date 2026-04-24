@@ -213,13 +213,23 @@
               "icon": "lucide-list",
               "title": "Plan de README"
             }
+          },
+          {
+            "id": "dff72523b3b96613",
+            "type": "leaf",
+            "state": {
+              "type": "mermaid-toolbar-view",
+              "state": {},
+              "icon": "trident-custom",
+              "title": "Mermaid Toolbar"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -229,14 +239,17 @@
       "daily-notes:Ouvrir la note quotidienne": false,
       "templates:Insérer le modèle": false,
       "command-palette:Ouvrir la palette de commandes": false,
-      "bases:Créer une nouvelle base": false
+      "bases:Créer une nouvelle base": false,
+      "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "a7bf150f8a4d76b4",
+  "active": "dff72523b3b96613",
   "lastOpenFiles": [
-    "Notes/OLD-README.md",
-    "README.md",
     "Notes/README-2.md",
+    "Notes/OLD-README.md",
+    "Pasted image 20260424000107.png",
+    "README.md",
+    "Pasted image 20260424000022.png",
     "Notes/Prompts/Sans titre.md",
     "Notes/Prompts",
     "Documentation/Basics.md",

@@ -2,14 +2,28 @@
 
 ## Overview
 
-The most reliable way to build software using AI coding agents is to request work in small, incremental steps executed within a highly scoped context. Prompts must be highly descriptive and precise, yet completely devoid of irrelevant noise. ActionBridge introduces a structured, file-system-based workflow built on the principle of **Hierarchical Context Cascading**. This principle aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, delivering superior results within complex codebases.
-### The Basics
+The most reliable way to build software using AI coding agents is to request work in small, incremental steps executed within a highly scoped context, covered by extensive unit-tests. Prompts must be highly descriptive and precise, yet completely devoid of irrelevant noise. 
 
-Any large codebase is typically divided into multiple projects, each featuring a deep directory hierarchy housing the source code. The core concept of ActionBridge is to store agent definitions, contexts, and rules in specific folders within this hierarchy, directly alongside the source code they pertain to.
+Any large codebase is typically divided into multiple projects, each featuring a deep directory hierarchy housing the source code. An agent working in the _data access layer_ does not need the same rules or documentation as an agent working on the _user interface_. However, all agents working on _unit testing_ might share a common baseline of rules while specific guidelines depending on what is being tested must be defined. Even the toolsets, Model Context Protocols (MCPs), and Skills will vary by work-item.
 
-An agent working in the data access layer does not need the same rules or documentation as an agent working on the user interface. However, all agents working on unit testing might share a common baseline of rules while inheriting specific guidelines depending on their local directory. Even the toolsets, Model Context Protocols (MCPs), and Skills will vary by location.
+The core concept of `ActionBridge` is to store agent definitions, toolling, contextual information like rules, guidelines and requirements in specific folders within this hierarchy, directly alongside the source code they pertain to. It introduces a structured, file-system-based workflow built on the principle of **Hierarchical Aggregated Context Preprocessor**. This principle aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, delivering superior results within complex codebases.
 
-It is well established that the more precise, localized, and contextually dense an AI's prompt is, the better the generated code will be. When using ActionBridge, any task is defined from specific starting points within the source code tree. These starting points dynamically build the optimal context, guidelines, and documentation strictly for that specific branch.
+## Quick Start
+### 1. Plug-In
+You have to install the `BridgeMarker` plug-in :
+- VS-Code : ...
+- Visual Studio : ...
+### 2. Start Dashboard
+Download the `ActionBridge.Manager` application, an start it. Connect to the right local port with a Browser, or use the `ActionBridge.Dashboard` application.
+### 3. Reference a root project directory
+Click `"Add Project..."` and enter the local, absolute path to the root directory of your source code.
+### 4. Choose Workflow
+If `ActionBridge` have never been used on this project, you have to choose a predefined Workflow Configuration.
+### 5. First Marker
+Open a source file in the project, select few code text, and call the Marker plug-ins by choosing "Create Marker" in local contextual "right click" menu. Come back in the Dashboard. You can see the Marker. You can create multiple markers.
+### 6. Start a Task
+Check a Marker. You can create a `Requirement`, a `Ticket` or a `Task`.
+# Principles
 ### Spec-Driven Development
 
 ActionBridge is designed to build a complete, high-quality, localized specification system through an iterative, emergent process. Developers can utilize it in two primary ways:
@@ -78,6 +92,8 @@ A summary of the complete workflow:
 - **Execute Tasks**: Create a `Task` to be executed immediately.
     
 As a developer, you can mix and match all four of these approaches within this ActionBridge configuration.
+
+![[Pasted image 20260424000107.png]]
 ### Bidirectional State Reconciliation
 
 ActionBridge operates as a bidirectional state reconciliation engine. While the standard flow cascades down from Specifications to Deliverables, the system can also run in reverse to verify that actual code behaviors and implemented rules remain perfectly reflected in the `Requirements`.
@@ -174,10 +190,11 @@ Any agent wake-up is managed by the `Bridge.exe` application, based on file chan
 ### Directory Configuration
 The default configuration is in `.bridge/_map.json`. This file contains directories definitions :
 
-| Space | Directory | EntitiesFileConfig             | Bridge    |
-| ----- | --------- | ------------------------------ | --------- |
-| Specs | .specs    | `_specification.entities.json` | FIXED     |
-| Works | .works    | `_workflow.entities.json`      | TRANSIENT |
+| Space  | Directory | EntitiesFileConfig             | Bridge    |
+| ------ | --------- | ------------------------------ | --------- |
+| Specs  | .specs    | `_specification.entities.json` | FIXED     |
+| Works  | .works    | `_workflow.entities.json`      | TRANSIENT |
+| Agents | .agents   |                                | FIXED     |
 This configuration define two directories. We can have one instance of each at at root directory and many in various branches :
 - `.specs`: each local .specs directory act as a contextual information containner that contribute to any `Intents` or `Ticket` in a particular point in project's directory hierarchy.
 - `.works`: a `Task` defined in a `.works` directory can be executed at the same time of another one in an another `.work` directory.
@@ -192,13 +209,13 @@ The workflow definition is based on a list of `Entity` definitions for each dire
 ### Default Specification Entities
 This configuration define one, single active file type.
 
-| Name   | Directory | Format     | State   | Agent            | Bridge  | Icon        | Color     | Tag   |
-| ------ | --------- | ---------- | ------- | ---------------- | ------- | ----------- | --------- | ----- |
-| Intent | Intents   | `*_{0000}` |         |                  | INTENT  |             |           |       |
-|        |           |            | pending | Agents/Architect | PENDING |             | blue      | point |
-|        |           |            | wip     |                  | WIP     |             | magenta   | point |
-|        |           | `_begin.*` |         |                  |         | right-arrow | dark-blue |       |
-|        |           | `_end.*`   |         |                  |         | left-arrow  | dark-blue |       |
+| Name   | Directory      | Format     | State   | Agent            | Bridge  | Icon        | Color     | Tag   |
+| ------ | -------------- | ---------- | ------- | ---------------- | ------- | ----------- | --------- | ----- |
+| Intent | .specs/Intents | `*_{0000}` |         |                  | INTENT  |             |           |       |
+|        |                |            | pending | Agents/Architect | PENDING |             | blue      | point |
+|        |                |            | wip     |                  | WIP     |             | magenta   | point |
+|        |                | `_begin.*` |         |                  |         | right-arrow | dark-blue |       |
+|        |                | `_end.*`   |         |                  |         | left-arrow  | dark-blue |       |
 With this configuration, every `.specs` directory can contains an "Intents" directory. Any file in this directory is an intent.
 #### Format
 The `_{0000}` naming component mean that each Intent has a number that define processing order of each intent file. The same `.specs` directory can contains an `Agents` directory, with a directory for each agent. Any `.md` file in an agent directory will be added in his prompt.

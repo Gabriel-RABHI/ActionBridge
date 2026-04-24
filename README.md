@@ -32,6 +32,11 @@ ActionBridge minimizes bureaucratic overhead by strictly separating persistent a
 
 This system naturally forms a clear, cascading generation chain: `Intents` -> `Requirements` -> `Tickets` -> `Tasks`.
 
+```mermaid
+flowchart LR
+Intents(round) --> Requirements(round) --> Tickets(round) --> Tasks(round)
+```
+
 Crucially, ActionBridge allows the developer to enter this chain at any level of abstraction, delegating the remaining downward steps to the AI agents. You can scale the AI's autonomy based on your immediate needs:
 
 - **Manual Execution:** The developer creates **Tasks** directly to execute specific programming instructions, maintaining granular control over the immediate code generation.
@@ -78,6 +83,8 @@ A summary of the complete workflow:
 - **Execute Tasks**: Create a `Task` to be executed immediately.
     
 As a developer, you can mix and match all four of these approaches within this ActionBridge configuration.
+
+![[Pasted image 20260424000022.png]]
 ### Bidirectional State Reconciliation
 
 ActionBridge operates as a bidirectional state reconciliation engine. While the standard flow cascades down from Specifications to Deliverables, the system can also run in reverse to verify that actual code behaviors and implemented rules remain perfectly reflected in the `Requirements`.
@@ -91,5 +98,7 @@ In the directory hierarchy, the configuration define two directories :
 - `.specs` : this directories contains the specifications, including `Intents` and `Requirements`.
 - `.works` : this directories contains `Tickets` and `Tasks`.
 
-> [!warning] WORK IN PROGRESS
+
+> [!CAUTION]
+> WORK IN PROGRESS
 
