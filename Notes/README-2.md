@@ -9,22 +9,151 @@ Any large codebase is typically divided into multiple projects, each featuring a
 The core concept of `ActionBridge` is to store agent definitions, toolling, contextual information like rules, guidelines and requirements in specific folders within this hierarchy, directly alongside the source code they pertain to. It introduces a structured, file-system-based workflow built on the principle of **Hierarchical Aggregated Context Preprocessor**. This principle aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, delivering superior results within complex codebases.
 
 ## Quick Start
+
 ### 1. Plug-In
+
 You have to install the `BridgeMarker` plug-in :
 - VS-Code : ...
 - Visual Studio : ...
+
 ### 2. Start Dashboard
+
 Download the `ActionBridge.Manager` application, an start it. Connect to the right local port with a Browser, or use the `ActionBridge.Dashboard` application.
+
 ### 3. Reference a root project directory
-Click `"Add Project..."` and enter the local, absolute path to the root directory of your source code.
+
+Click `"Add Project..."` and enter the local, absolute path to the root directory of your source code. Configure at least one the LLM end point.
+
+In the root project directory is created a `.bridge` directory.
+
 ### 4. Choose Workflow
+
 If `ActionBridge` have never been used on this project, you have to choose a predefined Workflow Configuration.
+
 ### 5. First Marker
+
 Open a source file in the project, select few code text, and call the Marker plug-ins by choosing "Create Marker" in local contextual "right click" menu. Come back in the Dashboard. You can see the Marker. You can create multiple markers.
+
 ### 6. Start a Task
-Check a Marker. You can create a `Requirement`, a `Ticket` or a `Task`.
+
+Check a Marker. You can create a simple `Task`, then click "Run". The entered prompt is then pushed to a fresh new 
+
 # Principles
-### Spec-Driven Development
+
+## Components
+
+The ActionBridge tooling is composed of few components :
+
+- **The Marker Tool** : it is a Visual Studio or VS Code plug-in to create a context file from which starting a new operation.
+- **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
+- **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
+
+In the `.bridge` directory created at the root of the project directory, is a `/bin` directory containing the `bridge.exe` CLI application. To manage the Agentic workflow, an instance of `bridge.exe --listen` must be started.
+
+## Features
+
+The `bridge.exe` is a reactive application that read the configuration files and listen to file changes in the entire project directory tree. An empty, default installation cannot run any task. A minimal configuration is needed. `bridge.exe` only provide this features :
+- Applying the configured workflow by starting the right agent with the right item file.
+- Building the prompts with macro processing.
+- Generate the new files for LLMs (using tool), with the specified naming format.
+- Manage the unique identifier creation to avoid conflits.
+- Perform clean-up when needed (deleting files).
+### The Minimal Workflow Configuration
+
+The default configuration is a minimalist workflow that execute `Tasks` using only a single `Agent` definition. To do so, `Spaces` must be defined.
+
+A `Space` is a sub directory in the `.bridge` directory. Those `Spaces` are defined in `.bridge/_map.json`. This file contains directories definitions :
+
+| Space     | Directory    | EntitiesFileConfig     | Lifecycle   | Description              |
+| --------- | ------------ | ---------------------- | ----------- | ------------------------ |
+| Works     | `.works`     | `_workflow.items.json` | `TRANSIENT` | Work-items management.   |
+| Agents    | `.agents`    |                        | `FIXED`     | Agent definitions.       |
+| Templates | `.templates` |                        | `FIXED`     | Prompt template library. |
+
+This configuration define three directories. There will be the given directories in the .bridge directory :
+
+- `.bridge/.works/` that contains tasks to execute.
+- `.bridge/.agents/` that contains agent definitions.
+- `.bridge/.templates/` that contains prompt template definitions.
+
+Each `Space` item inherite from a `Lifecycle` reference. This values are constants recognized by ActionBridge :
+
+- `TRANSIENT` mean that the content of this space is only **transitory** and can be deleted when needed.
+- `FIXED` mean that the content of this space is a **specification** and cannot be deleted.
+
+A specific `.bridge/.works/_workflow.items.json` is created. This file define `Items`, the usage and behaviors attached to the `.md` files that populate this directory.
+
+| Name | Directory      | Format     | State        | Agent            | Signal    | Icon   | Color     | Tag       |
+| ---- | -------------- | ---------- | ------------ | ---------------- | --------- | ------ | --------- | --------- |
+| Task | `.works/Tasks` | `{0000}_*` |              |                  |           | `task` |           |           |
+|      |                |            | `pending`    | `.agents/Worker` | `PENDING` |        |           |           |
+|      |                |            | `processing` |                  | `WIP`     |        | `magenta` |           |
+|      |                |            | `failled`    |                  | `DONE`    |        | `red`     | `warning` |
+|      |                |            | `done`       |                  | `DONE`    |        |           | `check`   |
+
+This table define the `Task` item. They are stored in the `.works/Tasks` in the `.bridge` directory. The file name format pattern induce that a number (identifier of the task) is attributed to each Task. This number is incrementally created at project level. Exemple : `0001_payment.md`. A Task item can have four status : `pending`, `processing`, `failled` or `done`. The state is directly encapsulated in the file name. Example : `0001_payment.processing.md`.
+
+Only a `pending` `Task` may start a new LLM chat session, using the `Worker` chat definition. This mean that a `.md` file appearing in the `.bridge/.works/Tasks/` directory will trigger a chat session to be started with the file content as prompt.
+
+The same Task file will not be renamed to change state : a new file is created with a new state. Reading this Task definition, we understand that we may found one of this sets of files :
+
+- `0001_payment.md`, `0001_payment.pending.md`, `0001_payment.processing.md`, `0001_payment.done.md`
+- `0001_payment.md`, `0001_payment.pending.md`, `0001_payment.processing.md`, `0001_payment.failled.md`
+
+Only `bridge.exe` can start a new chat session and create a new file. A specific Skill
+
+## Hierarchical Aggregation
+
+### Multiple `.bridge`
+
+You can have multiple `.bridge` in the directory tree.
+
+```
+📁 ERP
+├── 📁 .bridge
+│   ├── 📄 _map.json
+│   ├── 📁 .agents
+│   │   └── 📁 Worker
+│   │       ├── 📄 _begin.md
+│   │       └── 📄 _end.md
+│   ├── 📁 .templates
+│   │   └── 📄 default.md
+│   └── 📁 .works
+│       └── 📁 Tasks
+│           └── 📄 0001_quote_lifecycle.md
+│           └── 📄 0002_update_rm.md
+│           └── 📄 0003_quote_validation.md
+│           └── 📄 0003_quote_validation.pending.md
+│           └── 📄 0003_quote_validation.processing.md
+│           └── 📄 0003_quote_validation.done.md
+├── 📁 Module.Sales.Domain
+│   ├── 📁 .bridge
+│   │   └── 📁 .agents
+│   │       └── 📁 Worker
+│   │           └── 📄 _begin.md
+│   ├── 📁 Model
+│   │   ├── 📁 .bridge
+│   │   │   └── 📁 .agents
+│   │   │       └── 📁 Worker
+│   │   │           └── 📄 _begin.md
+│   │   └── 📁 Quote
+│   │       └── 📄 QuoteEntity.cs
+│   └── 📁 ReadModel
+│       └── 📁 Quote
+│           └── 📄 QuoteView.cs
+```
+
+In this directory tree, if you start a `Task` with the `Worker` agent from the source file `QuoteEntity.cs`, the prompt will aggregate the content of the files in directories :
+
+- `ERP/.bridge/.agents/Worker/`
+- `ERP/Module.Sales.Domain/.bridge/.agents/Worker/`
+- `ERP/Module.Sales.Domain/Model/.bridge/.agents/Worker/`
+
+This is an example of the Hierarchical Aggregated Context prompt building.
+
+# Advanced Workflow
+
+## Spec-Driven Development
 
 ActionBridge is designed to build a complete, high-quality, localized specification system through an iterative, emergent process. Developers can utilize it in two primary ways:
 
@@ -45,6 +174,20 @@ ActionBridge minimizes bureaucratic overhead by strictly separating persistent a
 ### The Generation Chain
 
 This system naturally forms a clear, cascading generation chain: `Intents` -> `Requirements` -> `Tickets` -> `Tasks`.
+
+```mermaid
+flowchart LR
+
+subgraph Specs
+Intents --> Requirements
+end
+subgraph Works
+Tickets --> Tasks
+end
+
+Requirements --> Tickets
+
+```
 
 Crucially, ActionBridge allows the developer to enter this chain at any level of abstraction, delegating the remaining downward steps to the AI agents. You can scale the AI's autonomy based on your immediate needs:
 
@@ -104,206 +247,6 @@ This reverse-sync unlocks powerful workflows. Developers can manually write or i
 ### Hierarchical Context Cascading
 
 In the directory hierarchy, the configuration define two directories :
+
 - `.specs` : this directories contains the specifications, including `Intents` and `Requirements`.
 - `.works` : this directories contains `Tickets` and `Tasks`.
-
----
----
----
-
-
-> [!warning] WORK IN PROGRESS
-
-
-
-
-
-
-To build a prompt, ActionBrige find all `.specs` directories, and aggregate the request matching files. For a given Agent, it allows the LLM to discover only the most relevant, "need-to-know" local instructions—ensuring system prompt, tools (MCP, Skills), rules, guidelines, knowledge and documentation are injected exactly where they belong in the directory tree in a cumulative way.
-### Stateless, Iterative Planning (The OODA Loop)
-
-The default workflow is based on Tickets execution :
-- As **Coding Assistant**, the `Tickets` are directly generated by the user.
-- As **SDD** (Specification Driven Development), the `Tickets` are generated by an LLM by comparing Specifications and Deliverable spaces.
-
-Then, **Tickets** are used to generate **Tasks**. When a **Ticket** is created, the `Planner` Agent wakes up, reads the **Ticket** intent, evaluates the _current_ state of the code and the local history, plans only the immediate 1 to 3 sequential tasks, and terminates.
-
-The generated **Tasks** are "all-in-one" items executed by short-lived, highly specialized micro-agents dynamically configured by the `Planner`. These `Worker` agents wake up with a precise persona (e.g., "Blazor UI Expert"), execute the code, document their exact changes, and die. They never have to waste tokens reflecting on their broader purpose.
-
-When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
-
-### Iterative Context Enhancement
-
-Traditionally, documentation rots because it is secondary to the code. In the ActionBridge workflow, the local Specification Space _drive_ the code generation. Therefore, refining the context is the primary development activity. Developers iterate on the local AI context as intensively as they used to iterate on source code. By adding branch-specific Specification Space artefacts (Tool-set, System Prompts, Agent Configuration, Guildelines, Rules, etc), and cherry pick historical ticket summaries, developers step-by-step build a localized knowledge base that acts as a perfect mirror of the desired code state.
-
-- **Example:** A developer notices the AI generated a component that doesn't handle edge-case error states correctly. Instead of manually editing the code to fix the bug, the developer adds a rule to the local `ui-exception-rules.md` file: _"All UI components in this directory must explicitly handle and render `TimeoutException` states."_ The Ticket is then rerun, and the AI generates the correct code.
-- **Benefits:**
-    - **Living Documentation:** The documentation is inherently kept up to date because if it isn't, the AI cannot generate the correct code.
-    - **Compounding Value:** Every rule added to the context makes all future AI operations in that directory smarter, safer, and more predictable.
-### The Legacy free "Delete and Rebuild" Paradigm
-
-When local, branch-specific contextual guidance, business rules, and documentation achieve a high enough descriptive power, the source code itself loses its sacred status.
-
-- **The Sub-Concept:** Source code becomes a completely disposable, temporary artifact. The true asset of your software is the recursively aggregated definitions and intents.
-- **Example:** Imagine realizing a foundational design flaw in a massive legacy module. In a traditional codebase, this means months of risky, manual refactoring. In ActionBridge, if your local context and `Intents` are highly descriptive, you can literally highlight the entire directory, press `Delete`, and simply re-activate all the Intents. The AI agents will read the precise rules, intents, and constraints, and perfectly reconstruct the entire module from scratch, conforming to the new architectural rules.
-- **Benefits:**
-    - **Zero Technical Debt:** Code never has time to "rot." If it gets messy, you don't refactor it; you refine the rules and regenerate it perfectly clean.
-    - **Absolute Developer Confidence:** The fear of breaking legacy code vanishes when you know the code is just a transient output that can be reliably rebuilt on demand.
-## Workflow
-
-### Components
-
-The ActionBridge tooling is composed of few components :
-- **The Marker Tool** : it is a Visual Studio or VS Code plug-in to create a context file from which starting a new operation.
-- **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
-- **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
-
-A project root directory must be recorded in the `Dashboard` to be managed, and an instance of `bridge.exe --listen` must be started with the project root directory path as parameter.
-### Usage
-
-In the IDE, in the source editor for a specific file, right-click permit to call the `Bridge` plug-ins command "Create a marker". It create a **Marker** JSON file containing (1) the file path, (2) the line number of the caret, and (3) the selected text in the editor.
-
-In the **Dashboard** application, this **Marker** files are stacked as inputs data. This inputs can be selected for two purpose :
-- Build a **Ticket**, a prompt to send to the LLM tool to plan a given programming work as Tasks.
-- Navigate the Spaces: the **Dashboard** show the tree composed of the .specs and .works directories, in a hierarchical way.
-## Create a Tickets
-
-To directly create a **Ticket**, there is a list of the various **Agents** seen from the main selected path. You can select an **Agent**, then write a prompt. The Agent `pre-prompt` and `post-prompt` defined in the various parent directories are shown stacked. During edition of the prompt, you can see instructions that tell the LLM not to execute the prompt directly, but to compare if the source code is already implementing the intent and if not, generate few Tasks file to reduce the distance between the code and the intent. When you have written the prompt, you can click "Run". If there no existing **Ticket** pending or in process, the **Ticket** is converted in **Tasks** by a fresh new LLM session that immediately quit. Then each **Tasks** are executed in a fresh new session, one by one. When all **Tasks** are done, the **Ticket** is again processed by a fresh new session: the LLM evaluate the source code to create the next few **Tasks** needed to execute the intent of the **Ticket**. This process continue in this loop.
-
-In a particular case, the Ticket processing can be paused to get details or decisions from the human. The Dashboard show the question, the user modify the Ticket to avoid the question.
-
-When the **Ticket** is completed - it mean that there is no remaining **Tasks** to be done for this Ticket and declared completed - a final **Summary** is produced. There is a summary **Index** that reference each **Tickets** summary. **Tickets** summary explain (1) the task intent, (2) the starting point, (3) problems and (4) changes. Upcoming **Ticket** processing **Agents** can read the **Index** and read the various tickets summaries as knowledge base.
-
-Tickets are stored as an archived large intent chain.
-## Crate an Intent
-
-To create an Intent, you can use the Marker as anchor point, and create an `Intent` file in the nearest `.specs/Intents/` directory. An intent is a high level planning step. 
-# Technical Overview
-## Conventions
-
-ActionBridge is done to be extremely configurable. The fixed conventions are tiny. The workflow orchestration use a single directory :
-- `.bridge`: one at root directory of the project. It contains global configurations and global states.
-
-Any agent wake-up is managed by the `Bridge.exe` application, based on file changes observation. A `Dashboard` application with a rich UI Web user interface is used to view and drive the complete ActionBridge process.
-## Workflow Definition
-
-### Directory Configuration
-The default configuration is in `.bridge/_map.json`. This file contains directories definitions :
-
-| Space  | Directory | EntitiesFileConfig             | Bridge    |
-| ------ | --------- | ------------------------------ | --------- |
-| Specs  | .specs    | `_specification.entities.json` | FIXED     |
-| Works  | .works    | `_workflow.entities.json`      | TRANSIENT |
-| Agents | .agents   |                                | FIXED     |
-This configuration define two directories. We can have one instance of each at at root directory and many in various branches :
-- `.specs`: each local .specs directory act as a contextual information containner that contribute to any `Intents` or `Ticket` in a particular point in project's directory hierarchy.
-- `.works`: a `Task` defined in a `.works` directory can be executed at the same time of another one in an another `.work` directory.
-
-| Field              | Decription                                                                                                                                                                                                                                                                                                                                         |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Space              | Space name.                                                                                                                                                                                                                                                                                                                                        |
-| Directory          | Name of the directory.                                                                                                                                                                                                                                                                                                                             |
-| EntitiesFileConfig | The name of the `Entity` configuration file.                                                                                                                                                                                                                                                                                                       |
-| Bridge             | The behavior of the directory from `bridge.exe` and the `Dashboard` application. `FIXED` mean this directory contains inputs, it must be persisted in the Git Repository.  In this context, it contains specification files. `TRANSIENT` means this directory contains removable files. In this context, is contains work-items, short life files. |
-The workflow definition is based on a list of `Entity` definitions for each directory. An Entity is a type of `.md` files that contribute to the global system. The `_specification.entities.json` file define a set of entities in the Specification Space in `.specs` directory. The `_workflow.entities.json` file define a set of entities in the Workflow Space in `.works` directory.
-### Default Specification Entities
-This configuration define one, single active file type.
-
-| Name   | Directory      | Format     | State   | Agent            | Bridge  | Icon        | Color     | Tag   |
-| ------ | -------------- | ---------- | ------- | ---------------- | ------- | ----------- | --------- | ----- |
-| Intent | .specs/Intents | `*_{0000}` |         |                  | INTENT  |             |           |       |
-|        |                |            | pending | Agents/Architect | PENDING |             | blue      | point |
-|        |                |            | wip     |                  | WIP     |             | magenta   | point |
-|        |                | `_begin.*` |         |                  |         | right-arrow | dark-blue |       |
-|        |                | `_end.*`   |         |                  |         | left-arrow  | dark-blue |       |
-With this configuration, every `.specs` directory can contains an "Intents" directory. Any file in this directory is an intent.
-#### Format
-The `_{0000}` naming component mean that each Intent has a number that define processing order of each intent file. The same `.specs` directory can contains an `Agents` directory, with a directory for each agent. Any `.md` file in an agent directory will be added in his prompt.
-#### State
-An intent `.md` file name can be written in mutiple formats. Example :
-- `payment-sys_0005.md` : this is a neutral, descriptive step in the product building.
-- `payment-sys_0005.pending.md` : this intent must be processed by an agent named `Architect`. The .pending.md termination act as a trigger for the Agent wake-up.
-- `payment-sys_0005.wip.md` : this intent is currently processed by an agent.
-#### Agent
-Some states are invoking an agent. Here, any file named `*.peinding.md` will trigger an Agent named `Architecte` to process the content as a prompt. Any agent wake-up is done by the `.bridge.exe` orchestration application. The Bridge rôle field permit to the `Dashboard` to understand the purpose or status of each file.
-
-Al `Intent` files are processed in a serialized workflow.
-#### Bridge
-The `INTENT` bridge keyword means that such files are seen as an `Intent` in the UI. The `WIP` key-word mean that an agent is processing the element. And intent can be `INTENT`, `INTENT-PENDING` or `INTENT-WIP` from the dashboard point of view.
-
-Format
-
-| Field      | Decription                                                                                                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Name       | Name of the Entity type. Used in the Dashboard.                                                                                                                                                                           |
-| Directory  | Name of the directory, in the .specs or .works, or any defined in hierarchy directory.                                                                                                                                    |
-| Format     | A name formatting pattern. Support wildcard (`*`) and numbering `{0000}` and reference (`$$`). If numbering is used, a globally unique incremented identifier is managed at project root level.                           |
-| State      | The various states the Entity can have. Exemple : `Ticket_1234.closed.md`.                                                                                                                                                |
-| Transition | The mode of the state : `RENAME` mean the transition of a file to this mode is only a matter of renaming the file name, `NEW` mean the Agent may create a new file with this state, containing reason for this new state. |
-| Agent      | The agent to start if a such Entity with this state is appearing.                                                                                                                                                         |
-| Bridge     | The                                                                                                                                                                                                                       |
-|            |                                                                                                                                                                                                                           |
-
-### Default Workflow Entities
-
-| Name   | Directory     | Format                      | State      | Agent           | Bridge  | Icon   | Color   | Tag      |
-| ------ | ------------- | --------------------------- | ---------- | --------------- | ------- | ------ | ------- | -------- |
-| Ticket | Board/Tickets | `Ticket_{0000}_{00}`        |            |                 | INPUT   | ticket |         |          |
-|        |               |                             | pending    | Agents/Planner  | PENDING |        |         |          |
-|        |               |                             | processing |                 | WIP     |        |         |          |
-|        |               |                             | rejected   |                 | ERROR   |        | orange  | stop     |
-|        |               |                             | request    |                 | REQUEST |        | yellow  | question |
-|        |               |                             | closed     | Agents/Scrib    | DONE    |        |         | check    |
-| Task   | Board/Tasks   | `$Ticket$_Task_{0000}_{00}` |            |                 |         | task   |         |          |
-|        |               |                             | pending    | Agents/Worker   | PENDING |        |         |          |
-|        |               |                             | processing |                 | WIP     |        | magenta |          |
-|        |               |                             | review     | Agents/Reviewer | PENDING |        |         |          |
-|        |               |                             | reviewing  |                 |         |        |         |          |
-|        |               |                             | rework     | Agents/Worker   | WIP     |        |         |          |
-|        |               |                             | failled    |                 | ERROR   |        | red     | warning  |
-|        |               |                             | done       |                 | DONE    |        |         | check    |
-
-### Agents/Planner
-
-`_begin.agent.md`
-```
-# Agent Definition
-You are the Ticket Planner.
-
-# Goal
-- Analyze the Ticket intent.
-- Check if the source code is doing the Ticket intent.
-	  - If the Ticket intent is not fullfill in the 
-```
-
-`_end.agent.md`
-```
-# Next Operations
-...
-```
-
-
-Key-Words
-
-`$AGENT <name>`
-
-
-
-| Name   | Directory     | Format                      | State      | Agent           | Bridge  | Icon   | Color   | Tag      |
-| ------ | ------------- | --------------------------- | ---------- | --------------- | ------- | ------ | ------- | -------- |
-| Ticket | Board/Tickets | `Ticket_{0000}_{00}`        |            |                 | INPUT   | ticket |         |          |
-|        |               |                             | pending    | *               | PENDING |        |         |          |
-|        |               |                             | processing |                 | WIP     |        |         |          |
-|        |               |                             | rejected   |                 | ERROR   |        | orange  | stop     |
-|        |               |                             | request    |                 | REQUEST |        | yellow  | question |
-|        |               |                             | closed     | Agents/Scrib    | DONE    |        |         | check    |
-| Task   | Board/Tasks   | `$Ticket$_Task_{0000}_{00}` |            |                 |         | task   |         |          |
-|        |               |                             | pending    | Agents/Worker   | PENDING |        |         |          |
-|        |               |                             | processing |                 | WIP     |        | magenta |          |
-|        |               |                             | review     | Agents/Reviewer | PENDING |        |         |          |
-|        |               |                             | reviewing  |                 |         |        |         |          |
-|        |               |                             | rework     | Agents/Worker   | WIP     |        |         |          |
-|        |               |                             | failled    |                 | ERROR   |        | red     | warning  |
-|        |               |                             | done       |                 | DONE    |        |         | check    |
-
-### Agents/Planner

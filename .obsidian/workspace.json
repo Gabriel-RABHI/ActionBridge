@@ -22,20 +22,6 @@
             }
           },
           {
-            "id": "a62d12ffa16f5cdc",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Notes/README-2.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "README-2"
-            }
-          },
-          {
             "id": "a7bf150f8a4d76b4",
             "type": "leaf",
             "state": {
@@ -47,6 +33,20 @@
               },
               "icon": "lucide-file",
               "title": "README"
+            }
+          },
+          {
+            "id": "b92af5c547df2db4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notes/README-2.md",
+                "mode": "preview",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "README-2"
             }
           }
         ],
@@ -68,6 +68,20 @@
               },
               "icon": "lucide-file",
               "title": "OLD-README"
+            }
+          },
+          {
+            "id": "9132201d4c36f28e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notes/Complément.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Complément"
             }
           }
         ]
@@ -143,7 +157,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "Notes/README-2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -153,7 +167,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Rétrolien pour README"
+              "title": "Rétrolien pour README-2"
             }
           },
           {
@@ -162,12 +176,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "Notes/README-2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Liens sortants de README"
+              "title": "Liens sortants de README-2"
             }
           },
           {
@@ -205,13 +219,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md",
+                "file": "Notes/README-2.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Plan de README"
+              "title": "Plan de README-2"
             }
           },
           {
@@ -243,17 +257,18 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "dff72523b3b96613",
+  "active": "b92af5c547df2db4",
   "lastOpenFiles": [
+    "Sans titre.md",
     "Notes/README-2.md",
     "Notes/OLD-README.md",
-    "Pasted image 20260424000107.png",
+    "Notes/Complément.md",
     "README.md",
     "Pasted image 20260424000022.png",
+    "Pasted image 20260424000107.png",
     "Notes/Prompts/Sans titre.md",
     "Notes/Prompts",
     "Documentation/Basics.md",
-    "Sans titre.md",
     "ActionBridge/Persistence/Configurations/Bridge/ProjectRootStates.cs",
     "ActionBridge/Persistence/Workflow/PlugIns/PendingAgentPromptRecord.cs",
     "ActionBridge/Persistence/Workflow/PlugIns",

@@ -1612,3 +1612,7 @@ community:
 - obsidian-system-dark-mode
 - obsidian-style-settings
 */
+
+p {
+	padding-top:.5rem;
+}
