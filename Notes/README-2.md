@@ -6,70 +6,85 @@
 
 The most reliable way to build software using AI coding agents is to request work in small, incremental steps. These steps must be executed within a highly scoped context and backed by extensive unit testing. This development workflow relies on experienced developers guiding LLMs much like they would a smart junior developer. Prompts must be highly descriptive and precise, yet completely free of irrelevant noise.
 
-However, as codebase size and complexity grow, developer confidence plummets—even with the most rigorous Unit and Integration test strategies. This creates a critical paradox: the lightning-fast speed of AI code generation can induce an overwhelming, counterproductive bottleneck in human review. Pull Requests (PRs) are often validated with minimal scrutiny. In the past, developers knew exactly what was in the code, how it worked, how it was tested, and the root of its design choices. Now, AI decides and writes the code, while developers often simply push it because the tests are green.
+However, as codebase size and complexity grow, developer confidence plummets—even with the most rigorous unit and integration test strategies. This creates a critical paradox: the lightning-fast speed of AI code generation can induce an overwhelming, counterproductive bottleneck in human review. Pull Requests (PRs) are often validated with minimal scrutiny. In the past, developers knew exactly what was in the code, how it worked, how it was tested, and the root of its design choices. Now, AI decides and writes the code, while developers often simply push it because the tests are green.
 
 What appears to be a productivity gain actually creates massive knowledge debt, and inevitably, technical debt.
 
-To handle large codebases with high-level requirements in a more autonomous, AI-assisted workflow, we need a highly contextualized approach. Simply passing the root directory and broad instructions is a dead end. Larger harness, prompts and memory lead to huge minimal context injection that only frontier models can handle. Any regression in model capability brake the workflow result. With a such approach, using local or smaller models is not possible. It impose to reduce the scope of expected changes and deeper code reviews.
+To handle large codebases with high-level requirements in a more autonomous, AI-assisted workflow, we need a highly contextualized approach. Simply passing the root directory and broad instructions is a dead end. Larger harnesses, prompts, and memory lead to massive baseline context injections that only frontier models can handle. Any regression in model capability breaks the workflow's results. With such an approach, using local or smaller models is impossible. It forces teams to reduce the scope of expected changes and conduct deeper code reviews.
 
-We think there is a large space of possible optimizations that can makes local AI large software development the future. ActionBridge is a fresh, logical and rational step to materialize this necessary evolution.
-### Goals
+We believe there is a large space of possible optimizations that can make large-scale software development using local AI the standard of the future. ActionBridge is a fresh, logical, and rational step to materialize this necessary evolution.
 
-Large codebases are typically divided into multiple projects, each with a deep directory hierarchy housing the source code. An agent working in the _data access layer_ does not need the same rules or documentation as one working on the _user interface_. Conversely, while all agents handling _unit testing_ might share a common baseline of rules, they still require specific guidelines based on the exact component being tested. Even the tools, Model Context Protocols (MCPs), and skills will vary from one work item to another.
+### Building Better Context
 
-The core concept of **ActionBridge** is to store work-items definition, tooling, and contextual information—such as rules, guidelines, skills and requirements—in specific folders directly alongside the relevant source code. It introduces a structured, file-system-based workflow built as a **Hierarchical Aggregated Context Preprocessor**. This approach aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, ensuring superior results even within complex codebases.
+Large codebases are typically divided into multiple projects, each with a deep directory hierarchy housing the source code. An agent working in the _data access layer_ does not need the same rules or documentation as one working on the _user interface_. Conversely, while all agents handling _unit testing_ might share a common baseline of rules, they still require specific guidelines based on the exact component being tested. Even the needed tools and Model Context Protocols (MCPs) will vary from one work item to another.
 
-ActionBridge does not impose a fixed, predefined workflow like Superpower or GSD does. Instead, it serves as an engine capable of powering _any_ workflow. These workflows can be customized on a per-directory basis and operate on stateful Work-Items. You can use ActionBridge to implement simple workflows, such as basic `Tasks` work-items with limited states (`planning`, `processing`, `reviewing`, `rejected`, `failed`, `done`), or to orchestrate layered, multi-faceted workflows that use multiple work-item types in loops, regressions, and chaining. You can build a comprehensive, self documenting development workflow managing work-items like `Intents`, `Requirements`, `Tickets`, `Issues`, `Tasks`, and maintain a deep workflow memory and knowledge base. This workflows can be specific for each project directory, the same project can be powered by the simplest workflows in one location, and the most sophisticated in others. This enables both a requirements-to-code pipeline and code-to-requirements back-propagation when manual code editing occur. 
+The core concept of **ActionBridge** is to store work-item definitions, tooling, and contextual information—such as rules, guidelines, skills, and requirements—in specific folders directly alongside the relevant source code. It introduces a structured, file-system-based workflow built as a **Hierarchical Aggregated Context Preprocessor**. This approach aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, ensuring superior results even within complex codebases. We do not provide the LLM with various options to cherry-pick in a non-deterministic, token-consuming process that pollutes the context; instead, we provide the LLM with an already refined aggregation of facts, built using a deterministic, repeatable, and controlled hierarchical aggregation process.
 
-Because everything is file-based, workflow configurations can be self-evolving. Agents can parse summaries of past works to autonomously improve their efficiency over time. Interoperability with external systems or development of new specific tooling is just a matter of reading and writing files. By localizing configurations per directory branch, there is virtually no limit to the complexity and customization of the various implemented workflows.
+### From Human to Agent
 
-## The Missing, Next Parts
-### Why ActionBrige ?
+The most advanced default workflow is built as a refinement process: starting from the most descriptive, human-readable artifacts to maintain a formal, coherent requirements backlog, which is then used to build deterministic, focused tasks for the final code generation. Humans need notes, wireframes, business explanations, rules, summaries, and reports. At the final stage, LLM code generation needs facts, entities, relationships, rules, and guidelines to execute explicit, unambiguous instructions. To seamlessly move from concepts to programming tasks, the advanced default workflow implements a layered refinement pipeline composed of `Intent` (global description), `Requirements` (what must be true), `Tickets` (what must be built), and `Tasks` (what must be done).
+
+### Managing Specialized Workflows
+
+ActionBridge does not impose a fixed, predefined workflow like Superpower or GSD does. We think that "one-process-fit-all" is a messy trap. Instead, ActionBridge serves as an engine capable of powering _any_ workflow. These workflows can be customized on a per-directory basis and operate on stateful work-items. You can use ActionBridge to implement simple workflows for trivial code sections of the project, such as basic `Tasks` work-items with limited states (`planning`, `processing`, `reviewing`, `rejected`, `failed`, `done`), or to orchestrate layered, multi-faceted workflows that use multiple work-item types in loops, regressions, and chains, in the most complicated par of the project. In other words, the same project can be powered by the simplest workflows in few locations, and the most sophisticated in others.
+
+Because everything is file-based, workflow configurations can be self-evolving. Agents can parse summaries of past work to autonomously improve their efficiency over time by adjusting the configurations of the various implemented workflows. This enables a supervised workflow refinement process, alongside a bidirectional pipeline: requirements-to-code generation and code-to-requirements back-propagation whenever manual code editing occurs.
+
+Because everything is file-based, interoperability with external systems or the development of new specific tooling is just a matter of reading and writing files. By localizing configurations per directory branch, there is virtually no limit to the complexity and customization of the various implemented workflows.
+
+## The Missing Next Steps
+
+### Why ActionBridge?
 
 We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand the chaos of large codebases?"_ Instead, it is about asking, _"How do we restructure software architecture to perfectly align with what LLMs are actually capable of producing?"_
 
-We think futur or AI assisted software development is the combination of four directions :
+We believe the future of AI-assisted software development lies in a combination of four directions:
 
-- **Smaller LLMs** : models specialized in planning, programming and tool calls. They may be fine-tuned for specific languages, technical stacks or aspects. They may run on smaller GPU or NPU, and be able to run near the developer IDE.
-- **Adaptive Tooling** : use more localized, iterative and adaptable workflows to reduce the harness and use smaller context windows. This is the purpose of ActionBridge.
-- **Reduce Code Size** : tell a LLM to use external, distant database management systems (queries, N+1 limits, migrations), caches and message brokers in a polyglot code base containing large boilerplate and noisy glue code, is a huge source of hallucination. Next systems must address this source of complexity.
-- **Simpler Software Architectures** : tell a LLM to handle a large code-base composed of highly coupled components that manage concurrent processes, induce large thinking token consumption to evaluate all the implicit and anticipate border effects. Next generation software must be extremely modular.
+- **Smaller LLMs**: Models specialized in planning, programming, and tool calling. They may be fine-tuned for specific languages, technical stacks, or specific aspects of development. They can run on smaller GPUs or NPUs, allowing them to operate locally alongside the developer's IDE.
+    
+- **Adaptive Tooling**: Using more localized, iterative, and adaptable workflows to reduce overhead and leverage smaller context windows. This is the exact purpose of ActionBridge.
+    
+- **Reduced Code Size**: Telling an LLM to interact with external, remote database management systems (handling queries, N+1 limits, and migrations), caches, and message brokers within a polyglot codebase full of boilerplate and noisy glue code is a massive source of hallucinations. Next-generation systems must address this inherent complexity.
+    
+- **Simpler Software Architectures**: Telling an LLM to navigate a large codebase composed of highly coupled components that manage concurrent processes induces a massive consumption of reasoning tokens just to evaluate implicit behaviors and anticipate side effects. Next-generation software must be extremely modular.
 
-### Reduce Code Size
+### Reduced Code Size
 
-ActionBridge was born as the logical continuation of a deeper architectural technology: **Ghost Body Object (GBO)**. GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers. What work for *humans*, work for *AI*. 
+ActionBridge was born as the logical continuation of a deeper architectural technology: **Ghost Body Object (GBO)**. GBO is a groundbreaking, high-performance, transactional, persistent, and distributed .NET memory model designed primarily to radically simplify software design for _human_ developers. What works for _humans_, works for _AI_.
 
-However, ActionBridge is entirely agnostic. It is independent from the GBO technology, don't need it and do not use it. ActionBridge can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
+However, ActionBridge is entirely agnostic. It is independent of GBO technology; it neither requires nor uses it. ActionBridge can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
 
-Using GBO, objects (struct handles) are the data, accessed in virtual memory, without latency. The reality is that 99% of entreprise databases in the world, fit in today commodity server main memory. GBO suppress N+1 problem, flaws of the Unit Of Work pattern, serialization. It drastically reduce GC pressure and heap allocations. Most of data access use zero copy patterns. His API is ambient : there is no inserting, loading, updating code - only object collection manipulation, indexes, primitives, queues. It suppress Integration tests for persistent data and state management - all regular data access code is Unit Tested. It introduce a new ECS object model, enabling dynamic composition at runtime and expendability. It support LINQ without restriction for C# code call. It is really fast, and transparently distributed overs large servers farms, suppressing cache management and message brokers.
+Using GBO, C# objects (struct handles) _are_ the data, accessed directly in virtual memory without latency. The reality is that 99% of enterprise databases in the world fit into today's commodity server main memory. GBO eliminates the N+1 problem, the flaws of the Unit of Work pattern, and the need for serialization. It drastically reduces Garbage Collection (GC) pressure and heap allocations. Most data access operations use zero-copy patterns. Its API is ambient: there is no boilerplate code for inserting, loading, or updating—only object collection manipulation, indexes, primitives, and queues.
 
-The code size reduction ratio is expected to be between 2 to 5 for an average business LOB solution.
+Furthermore, it eliminates the need for integration tests regarding persistent data and state management—all regular data access code can simply be unit tested. It introduces a new Entity Component System (ECS) object model, enabling dynamic composition and expandability at runtime. It supports LINQ without restriction for C# code calls. It is incredibly fast and transparently distributed over large server farms, eliminating the need for cache management and message brokers.
+
+The code size reduction ratio is expected to be between 2x and 5x for an average Line of Business (LOB) solution.
 
 > NOTE : The **Ghost Body Object** (GBO) technology isn't just a prototype - it's the result of 15 years of relentless trial, testing, and refinement. It powers a mission-critical healthcare system across 450 production instances since 2022. It is used for a complex event-sourced LOB application since 2023. The upcoming published release is the fifth major iteration, extracting battle-tested principles into a generalized, high-performance infrastructure for the .NET ecosystem.
 
-### Simpler Software "Cell" Architecture
+### Software "Cell" Architecture
 
-The next generation of software architecture must be explicitly designed for AI-assisted development. Boilerplate and glue code must be abstracted away, allowing both humans and AI to focus entirely on specific business domains and distinct functional aspects, using a drastically simplified and shorter source code. GBO fulfill half of this requirement.
+The next generation of software architecture must be explicitly designed for AI-assisted development. Boilerplate and glue code must be abstracted away, allowing both humans and AI to focus entirely on specific business domains and distinct functional aspects, using drastically simplified and reduced source code. GBO fulfills half of this requirement.
 
-The second part is a global software architectural patterns. GBO comes with a specific reference architecture - using Event Sourcing or Mutation Sourcing - that makes it uniquely cohesive with ActionBridge workflow management. Large projects are built using vertical modularization (e.g., `Sales`, `Users`, `Orders`, `Shipping`) intersecting with horizontal layers (`UI Components`, `UI State`, `Domain`, `Read Models`, and `Asynchronous Services`). Front-end use Blazor Server Side for direct, zero-copy, zero-serialization entity access and dynamic UI composition.
+The second part concerns global software architectural patterns. GBO comes with a specific reference architecture based on globalized CQRS, simplified Event Sourcing, and Mutation Sourcing as a replayable CRUD model. Large projects are built using vertical modularization (e.g., `Sales`, `Users`, `Orders`, `Shipping`) intersecting with horizontal layers (`UI Components`, `UI State`, `Domain`, and `Asynchronous Services`). The front-end uses `Blazor Server Side` for direct, zero-copy, zero-serialization entity access and dynamic UI composition.
 
 The intersection of a vertical slice and a horizontal layer forms a **Cell**. Because Cells can encapsulate other Cells, the architecture is inherently fractal. Source code is distributed across separate projects, and within each project, every aspect is organized into deep directory trees.
 
 > **NOTE:** Vertical alignment is not an absolute architectural requirement. Overlapping and intentional misalignment are sometimes necessary mitigations. The "Cell" is more of a guiding conceptual model than a rigid technical constraint.
 
-Crucially, each Cell completely hides its internal data structures, processes, and logic, exposing only a strict, reduced set of abstractions. This reference "Clean" architecture implement well known patterns:
+Crucially, each Cell completely hides its internal data structures, processes, and logic, exposing only a strict, reduced set of abstractions. This reference "Clean" architecture implements well-known patterns:
 
 - **Commands** (what the Cell can do) and **Read Models** (what data it exposes).
+    
 - **States** (what the UI must render) and **Actions** (what the State can process).
+    
 - **Jobs** (what background operations a Service can perform), **JobStatus**, and **JobResult**.
+    
+In such an architecture, at any given level, only the abstractions of the underlying or adjacent components are visible, while external client components remain unknown. The context materializes a space limited strictly by its dependencies, published capabilities, and artifacts. This pattern fully embraces the SOLID principles and the Domain-Driven Design (DDD) philosophy of the "bounded context."
 
-In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components remain unknown. The context materialize a space limited by its dependencies, published capabilities and artifacts. This aspects embrasse the SOLID principles and DDD philosophy.
+These Cells provide the perfect boundaries for applying the ActionBridge concept. The specifications (guidelines, rules, skills) and the development workflow are localized to each Cell, directly within the deliverable (the source code). Using the GBO ambient API, modularization is not just a design convention; it is a technical reality. The extreme simplification achieved by GBO, combined with a highly focused, reduced context, is tangibly measured by the vastly lower LLM token consumption required to implement any given feature.
 
-This implementation contexts provides the exact boundary where an ActionBridge can specialize in generating code using a significantly smaller context window and reduced reasoning effort. Using the GBO ambient API, modularization is not a design convention, it is a technical reality. The extreme simplification achieved by GBO is tangibly measured by the vastly lower LLM token consumption required to implement any given feature.
-
-The main principle is to makes the specification (guidelines, rules, instructions, skills) and the workflow localized to each Cell : each Cell have his own documentation and building process stored within the deliverable (the source code).
-
-While ActionBridge is perfectly cohesive with this new Cell oriented architectural model, it is entirely agnostic. The local specification can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
+Once again: while ActionBridge is perfectly cohesive with this new Cell-oriented architectural model, it is entirely agnostic. Its localized specification approach can be implemented in **any** legacy or modern project today to enhance the predictability and robustness of AI-generated code.
 
 ---
 
