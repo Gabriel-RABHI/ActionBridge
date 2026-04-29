@@ -42,15 +42,15 @@
               "type": "markdown",
               "state": {
                 "file": "Notes/README-2.md",
-                "mode": "preview",
-                "source": true
+                "mode": "source",
+                "source": false
               },
               "icon": "lucide-file",
               "title": "README-2"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       },
       {
         "id": "cbe6500404d13492",
@@ -76,15 +76,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Notes/Complément.md",
+                "file": "Notes/Prompts/Sans titre.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Complément"
+              "title": "Sans titre"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -257,16 +258,17 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "b92af5c547df2db4",
+  "active": "a7bf150f8a4d76b4",
   "lastOpenFiles": [
-    "Sans titre.md",
     "Notes/README-2.md",
+    "README.md",
+    "Notes/Prompts/Sans titre.md",
+    "ActionBridge.Common/obj/f75fa054-b8e3-4e26-a095-ff7f630247df.tmp",
     "Notes/OLD-README.md",
     "Notes/Complément.md",
-    "README.md",
+    "Sans titre.md",
     "Pasted image 20260424000022.png",
     "Pasted image 20260424000107.png",
-    "Notes/Prompts/Sans titre.md",
     "Notes/Prompts",
     "Documentation/Basics.md",
     "ActionBridge/Persistence/Configurations/Bridge/ProjectRootStates.cs",
@@ -276,7 +278,6 @@
     "ActionBridge/Values/SignalId.cs",
     "ActionBridge/Values/TicketId.cs",
     "ActionBridge/Persistence/Workflow/Bridge/ol1sle2s.vk0~",
-    "ActionBridge/Values/FileName.cs",
-    "ActionBridge/Values/DirectoryPath.cs"
+    "ActionBridge/Values/FileName.cs"
   ]
 }

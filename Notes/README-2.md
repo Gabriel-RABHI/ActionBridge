@@ -2,19 +2,85 @@
 
 ## Overview
 
-The most reliable way to build software using AI coding agents is to request work in small, incremental steps executed within a highly scoped context, covered by extensive unit-tests. Prompts must be highly descriptive and precise, yet completely devoid of irrelevant noise. 
+### The Starting Point
 
-Any large codebase is typically divided into multiple projects, each featuring a deep directory hierarchy housing the source code. An agent working in the _data access layer_ does not need the same rules or documentation as an agent working on the _user interface_. However, all agents working on _unit testing_ might share a common baseline of rules while specific guidelines depending on what is being tested must be defined. Even the toolsets, Model Context Protocols (MCPs), and Skills will vary by work-item.
+The most reliable way to build software using AI coding agents is to request work in small, incremental steps. These steps must be executed within a highly scoped context and backed by extensive unit testing. This development workflow relies on experienced developers guiding LLMs much like they would a smart junior developer. Prompts must be highly descriptive and precise, yet completely free of irrelevant noise.
 
-The core concept of `ActionBridge` is to store agent definitions, toolling, contextual information like rules, guidelines and requirements in specific folders within this hierarchy, directly alongside the source code they pertain to. It introduces a structured, file-system-based workflow built on the principle of **Hierarchical Aggregated Context Preprocessor**. This principle aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, delivering superior results within complex codebases.
+However, as codebase size and complexity grow, developer confidence plummets—even with the most rigorous Unit and Integration test strategies. This creates a critical paradox: the lightning-fast speed of AI code generation can induce an overwhelming, counterproductive bottleneck in human review. Pull Requests (PRs) are often validated with minimal scrutiny. In the past, developers knew exactly what was in the code, how it worked, how it was tested, and the root of its design choices. Now, AI decides and writes the code, while developers often simply push it because the tests are green.
 
-## Quick Start
+What appears to be a productivity gain actually creates massive knowledge debt, and inevitably, technical debt.
+
+To handle large codebases with high-level requirements in a more autonomous, AI-assisted workflow, we need a highly contextualized approach. Simply passing the root directory and broad instructions is a dead end. Larger harness, prompts and memory lead to huge minimal context injection that only frontier models can handle. Any regression in model capability brake the workflow result. With a such approach, using local or smaller models is not possible. It impose to reduce the scope of expected changes and deeper code reviews.
+
+We think there is a large space of possible optimizations that can makes local AI large software development the future. ActionBridge is a fresh, logical and rational step to materialize this necessary evolution.
+### Goals
+
+Large codebases are typically divided into multiple projects, each with a deep directory hierarchy housing the source code. An agent working in the _data access layer_ does not need the same rules or documentation as one working on the _user interface_. Conversely, while all agents handling _unit testing_ might share a common baseline of rules, they still require specific guidelines based on the exact component being tested. Even the tools, Model Context Protocols (MCPs), and skills will vary from one work item to another.
+
+The core concept of **ActionBridge** is to store work-items definition, tooling, and contextual information—such as rules, guidelines, skills and requirements—in specific folders directly alongside the relevant source code. It introduces a structured, file-system-based workflow built as a **Hierarchical Aggregated Context Preprocessor**. This approach aggressively optimizes AI agent execution by maximizing the signal-to-noise ratio, ensuring superior results even within complex codebases.
+
+ActionBridge does not impose a fixed, predefined workflow like Superpower or GSD does. Instead, it serves as an engine capable of powering _any_ workflow. These workflows can be customized on a per-directory basis and operate on stateful Work-Items. You can use ActionBridge to implement simple workflows, such as basic `Tasks` work-items with limited states (`planning`, `processing`, `reviewing`, `rejected`, `failed`, `done`), or to orchestrate layered, multi-faceted workflows that use multiple work-item types in loops, regressions, and chaining. You can build a comprehensive, self documenting development workflow managing work-items like `Intents`, `Requirements`, `Tickets`, `Issues`, `Tasks`, and maintain a deep workflow memory and knowledge base. This workflows can be specific for each project directory, the same project can be powered by the simplest workflows in one location, and the most sophisticated in others. This enables both a requirements-to-code pipeline and code-to-requirements back-propagation when manual code editing occur. 
+
+Because everything is file-based, workflow configurations can be self-evolving. Agents can parse summaries of past works to autonomously improve their efficiency over time. Interoperability with external systems or development of new specific tooling is just a matter of reading and writing files. By localizing configurations per directory branch, there is virtually no limit to the complexity and customization of the various implemented workflows.
+
+## The Missing, Next Parts
+### Why ActionBrige ?
+
+We are reaching the limits of what generic tooling and raw model scaling can achieve. The future of AI-assisted software engineering is not about asking, _"How do we endlessly enhance LLM capabilities to understand the chaos of large codebases?"_ Instead, it is about asking, _"How do we restructure software architecture to perfectly align with what LLMs are actually capable of producing?"_
+
+We think futur or AI assisted software development is the combination of four directions :
+
+- **Smaller LLMs** : models specialized in planning, programming and tool calls. They may be fine-tuned for specific languages, technical stacks or aspects. They may run on smaller GPU or NPU, and be able to run near the developer IDE.
+- **Adaptive Tooling** : use more localized, iterative and adaptable workflows to reduce the harness and use smaller context windows. This is the purpose of ActionBridge.
+- **Reduce Code Size** : tell a LLM to use external, distant database management systems (queries, N+1 limits, migrations), caches and message brokers in a polyglot code base containing large boilerplate and noisy glue code, is a huge source of hallucination. Next systems must address this source of complexity.
+- **Simpler Software Architectures** : tell a LLM to handle a large code-base composed of highly coupled components that manage concurrent processes, induce large thinking token consumption to evaluate all the implicit and anticipate border effects. Next generation software must be extremely modular.
+
+### Reduce Code Size
+
+ActionBridge was born as the logical continuation of a deeper architectural technology: **Ghost Body Object (GBO)**. GBO is a groundbreaking .NET, high performance, transactional, persistent and distributed memory model designed primarily to radically simplify software design for _human_ developers. What work for *humans*, work for *AI*. 
+
+However, ActionBridge is entirely agnostic. It is independent from the GBO technology, don't need it and do not use it. ActionBridge can be seamlessly applied to **any** existing, structured codebase to enhance AI reliability and output quality.
+
+Using GBO, objects (struct handles) are the data, accessed in virtual memory, without latency. The reality is that 99% of entreprise databases in the world, fit in today commodity server main memory. GBO suppress N+1 problem, flaws of the Unit Of Work pattern, serialization. It drastically reduce GC pressure and heap allocations. Most of data access use zero copy patterns. His API is ambient : there is no inserting, loading, updating code - only object collection manipulation, indexes, primitives, queues. It suppress Integration tests for persistent data and state management - all regular data access code is Unit Tested. It introduce a new ECS object model, enabling dynamic composition at runtime and expendability. It support LINQ without restriction for C# code call. It is really fast, and transparently distributed overs large servers farms, suppressing cache management and message brokers.
+
+The code size reduction ratio is expected to be between 2 to 5 for an average business LOB solution.
+
+> NOTE : The **Ghost Body Object** (GBO) technology isn't just a prototype - it's the result of 15 years of relentless trial, testing, and refinement. It powers a mission-critical healthcare system across 450 production instances since 2022. It is used for a complex event-sourced LOB application since 2023. The upcoming published release is the fifth major iteration, extracting battle-tested principles into a generalized, high-performance infrastructure for the .NET ecosystem.
+
+### Simpler Software "Cell" Architecture
+
+The next generation of software architecture must be explicitly designed for AI-assisted development. Boilerplate and glue code must be abstracted away, allowing both humans and AI to focus entirely on specific business domains and distinct functional aspects, using a drastically simplified and shorter source code. GBO fulfill half of this requirement.
+
+The second part is a global software architectural patterns. GBO comes with a specific reference architecture - using Event Sourcing or Mutation Sourcing - that makes it uniquely cohesive with ActionBridge workflow management. Large projects are built using vertical modularization (e.g., `Sales`, `Users`, `Orders`, `Shipping`) intersecting with horizontal layers (`UI Components`, `UI State`, `Domain`, `Read Models`, and `Asynchronous Services`). Front-end use Blazor Server Side for direct, zero-copy, zero-serialization entity access and dynamic UI composition.
+
+The intersection of a vertical slice and a horizontal layer forms a **Cell**. Because Cells can encapsulate other Cells, the architecture is inherently fractal. Source code is distributed across separate projects, and within each project, every aspect is organized into deep directory trees.
+
+> **NOTE:** Vertical alignment is not an absolute architectural requirement. Overlapping and intentional misalignment are sometimes necessary mitigations. The "Cell" is more of a guiding conceptual model than a rigid technical constraint.
+
+Crucially, each Cell completely hides its internal data structures, processes, and logic, exposing only a strict, reduced set of abstractions. This reference "Clean" architecture implement well known patterns:
+
+- **Commands** (what the Cell can do) and **Read Models** (what data it exposes).
+- **States** (what the UI must render) and **Actions** (what the State can process).
+- **Jobs** (what background operations a Service can perform), **JobStatus**, and **JobResult**.
+
+In such an architecture, at any given level, only the abstractions of the underlying components are visible, and external client components remain unknown. The context materialize a space limited by its dependencies, published capabilities and artifacts. This aspects embrasse the SOLID principles and DDD philosophy.
+
+This implementation contexts provides the exact boundary where an ActionBridge can specialize in generating code using a significantly smaller context window and reduced reasoning effort. Using the GBO ambient API, modularization is not a design convention, it is a technical reality. The extreme simplification achieved by GBO is tangibly measured by the vastly lower LLM token consumption required to implement any given feature.
+
+The main principle is to makes the specification (guidelines, rules, instructions, skills) and the workflow localized to each Cell : each Cell have his own documentation and building process stored within the deliverable (the source code).
+
+While ActionBridge is perfectly cohesive with this new Cell oriented architectural model, it is entirely agnostic. The local specification can be implemented in **any** legacy or modern project now to enhance the predictability and robustness of AI-generated code.
+
+---
+
+# Quick Start
 
 ### 1. Plug-In
 
 You have to install the `BridgeMarker` plug-in :
 - VS-Code : ...
 - Visual Studio : ...
+- Raider : ...
 
 ### 2. Start Dashboard
 
@@ -22,140 +88,370 @@ Download the `ActionBridge.Manager` application, an start it. Connect to the rig
 
 ### 3. Reference a root project directory
 
-Click `"Add Project..."` and enter the local, absolute path to the root directory of your source code. Configure at least one the LLM end point.
+Click `"Add Project..."` and enter the local, absolute path to the root directory of your source code. Configure at least one LLM provider.
 
 In the root project directory is created a `.bridge` directory.
 
 ### 4. Choose Workflow
 
-If `ActionBridge` have never been used on this project, you have to choose a predefined Workflow Configuration.
+If `ActionBridge` have never been used on this project, you have to choose a predefined Workflow Configuration. Choose the `"Basic Task Workflow"`.
 
 ### 5. First Marker
 
-Open a source file in the project, select few code text, and call the Marker plug-ins by choosing "Create Marker" in local contextual "right click" menu. Come back in the Dashboard. You can see the Marker. You can create multiple markers.
+Open a source file in the project, select few code text, and call the Marker plug-ins by choosing `"Create Marker"` in local contextual `"right click"` menu. Come back in the Dashboard. You can see the Marker. You can create multiple markers.
 
 ### 6. Start a Task
 
-Check a Marker. You can create a simple `Task`, then click "Run". The entered prompt is then pushed to a fresh new 
+Check a Marker. You can create a simple `Task`, enter a prompt then click `"Run"`. The `Task` prompt is then pushed to a fresh new Chat instance.
 
-# Principles
+---
 
-## Components
+# Behind The Scene
 
-The ActionBridge tooling is composed of few components :
+#### You can stop here and use the Dashboard to configure the various workflows, navigate the directories, create work-items, run it, track the work in progress, use chats, view history, and iterate on your code-base. In the this section, we will explore how the system really work, behind the scene.
 
-- **The Marker Tool** : it is a Visual Studio or VS Code plug-in to create a context file from which starting a new operation.
-- **The Dashboard:** On top is a UI tool that allows users to configure, visualize, and manage the entire workflow.
-- **The Bridge:** In between is the `bridge.exe` CLI application, which manages the workflow files and orchestrates the state machine.
+## Two Aspects
 
-In the `.bridge` directory created at the root of the project directory, is a `/bin` directory containing the `bridge.exe` CLI application. To manage the Agentic workflow, an instance of `bridge.exe --listen` must be started.
+A `Task` is a work-item type defined in the workflow configuration. When you create a `Task` to be executed by a LLM, there is two distincts concepts :
 
-## Features
+- The **Hierarchical Aggregated Context Preprocessor** : it is the initial prompt building principle used to enhance the user prompt with additional contextual informations. This aggregation of context information is driven by a main template, a `.md` file in a dedicated directory.
+  
+- The **Item State Templates** : a `Task` is processed by serie of distincts Chats sessions. It can be first validated, then executed, reviewed, tested, declared failed or done. For each step execution, specific instructions are provided. This instructions are surrounding the initial prompt to manage the process. This state specific instructions are defined in `Tasks` per state templates.
 
-The `bridge.exe` is a reactive application that read the configuration files and listen to file changes in the entire project directory tree. An empty, default installation cannot run any task. A minimal configuration is needed. `bridge.exe` only provide this features :
-- Applying the configured workflow by starting the right agent with the right item file.
-- Building the prompts with macro processing.
-- Generate the new files for LLMs (using tool), with the specified naming format.
-- Manage the unique identifier creation to avoid conflits.
-- Perform clean-up when needed (deleting files).
-### The Minimal Workflow Configuration
+### 1. Hierarchical Aggregated Context Preprocessor
 
-The default configuration is a minimalist workflow that execute `Tasks` using only a single `Agent` definition. To do so, `Spaces` must be defined.
+When the user create a new `Task` work-item, a file is created. Example : `0100_01_paypal_support.md`
+
+This file contains only what the user entered as a prompt. Example : `"Implement Paypal as additionnal payment service."`
+
+This prompt will be merged in the `Task` work-item main template. Aggregated contextual informations are added to the final, Chat injected prompt. The `Task` work-item main template can be defined in the root `.bridge` directory of the project as `.bridge/Templates/task.md`. But a new `task.md` template file can be added in sub directories : one for the directory containing UI source code, one for the Data access directory, another one for Services directory. When we create a work-item from a source file located in this directories, the specific instructions will be automatically added by scanning local to root `task.md` template files, to the specific work item prompt.
+
+This is the first step prompt aggregation, called `proprocessing`. This permit to build a riche, detailed prompt with local technical or business details.
+
+When the user click "Run", this processed prompt is merged with the first state template.
+
+### 2. Item State Template
+
+Work-items are following a precise, state based workflow. For example, a `Task` work-item workflow can have this states : `validating`, `processing`, `reviewing`, `testing`, `rejected`, `failed`, `done`. A table describe the allowed transitions. Here, there is possible regressions :
+- after `validating`, it can goes to  `processing` or `rejected`,
+- after `processing`, it can goes to  `reviewing` or `failed`,
+- after `reviewing`, he can goes to `testing` or come bask to `processing`,
+- after `testing`, he can goes to `done` or come bask to `processing`.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Validating
+
+    Validating --> Processing
+    Validating --> Rejected
+    
+    Processing --> Reviewing
+    Processing --> Failed
+    
+    Reviewing --> Testing
+    Reviewing --> Processing
+    Reviewing --> Failed
+    
+    Testing --> Done
+    Testing --> Processing
+    Testing --> Failed
+
+    Rejected --> [*]
+    Failed --> [*]
+    Done --> [*]
+```
+
+For each state mutation in the workflow, a new file is created in which the LLM write the next step instructions. When a mutation occur, a new file is created on disk with `".wip.md"` extention, and fresh new Chat is started.
+
+Here the files created for a complete work-Item processing :
+- `0100_01_paypal_support.md` : the initial user prompt, alone.
+- `0100_02_paypal_support.validating.md` : contains the initial user prompt with all the aggregated informations necessary to perform the related task (the `task.md` main template merged), surrounded with the state validating specific instructions ("you are a task validator", "validate the intent", "then create the next state").
+- `0100_02_paypal_support.validating.wip.md` : contains the tools calls and logged information (optional) during the validation execution step.
+- `0100_03_paypal_support.processing.md`: contains the initial user prompt again, surrounded with the processing state specific instructions ("you are a senior developer ", "execute the instruction", "then create the next reviewing state").
+- `0100_03_paypal_support.processing.wip.md` : tool calls, logs.
+- `0100_04_paypal_support.reviewing.md` : same logic.
+- `0100_04_paypal_support.reviewing.wip.md` : tool calls, logs.
+- `0100_05_paypal_support.testing.md` : initial merged prompt, instructions.
+- `0100_05_paypal_support.testing.wip.md` : tool calls, logs.
+- `0100_06_paypal_support.done.md` : contains an analysis of what have been done, changed and fixed.
+
+Each `Task` work-item have a unique identifier and a state transition identifier :
+
+`{task id}_{mutation id}_paypal_support.done.md`.
+
+Mutation identifiers are limited to 99. Reach 98, task is automatically mutated in `failed` state and abandonned.
+
+## Templating
+
+### Hierarchical Aggregated
+
+Here is an example of a directory hierarchy :
+
+```
+📁 ERP
+├── 📁 .bridge
+│   ├── 📄 _map.json
+│   ├── 📁 .templates
+│   │   ├── 📄 task.md
+│   │   ├── 📄 task.validating.md
+│   │   ├── 📄 task.processing.md
+│   │   ├── 📄 task.reviewing.md
+│   │   ├── 📄 task.testing.md
+│   │   ├── 📄 task.rejected.md
+│   │   ├── 📄 task.failed.md
+│   │   └── 📄 task.done.md
+	├── 📁 Model
+    │   └── 📁 Domain
+    │       └── 📄 entity_rules.md
+│   └── 📁 .works
+│       └── 📁 Tasks
+│           ├── 📄 0100_01_paypal_support.md
+│           ├── 📄 0100_02_paypal_support.validating.md
+│           └── 📄 ...
+└── 📁 Module.Sales.Domain
+    └── 📁 Model
+        ├── 📁 .bridge
+        │   └── 📁 .templates
+        │   │   ├── 📄 task.md
+        │   │   └── 📄 task.processing.md
+        │   📁 Model
+        │   └── 📁 Domain
+        │       └── 📄 business_rules.md
+        └── 📁 Quote
+            └── 📄 QuoteEntity.cs
+```
+
+When creating a `Task` from the file `QuoteEntity.cs` using a `Marker` created with the `BridgeMarker` IDE plug-in, two `.bridge` directories are visible:
+- `ERP/.bridge` : the root directory, with the default templates for the `Task` work-item type.
+- `ERP/Module.Sales.Domain/Model/.bridge` : a specific `.bridge` directory to contextualize the prompts. This directory contains specific, local `task.md` template and a specific `task.processing.md` template file.
+
+Here is the `ERP/.bridge/.templates/task.md`:
+
+```
+// Top Template Content
+
+$<prompt>
+```
+
+**Note** : `$<prompt>` instruction is a preprocessor variable insertion macro.
+
+Here is the `ERP/Module.Sales.Domain/Model/.bridge/.templates/task.md`:
+
+```
+# DOMAIN MODEL RULES
+
+$AGGREGATE TOP-DOWN .bridge/Model/Domain/*_rules.md
+
+# TASK GOAL
+
+$<prompt>
+```
+
+**Note** : `$AGGREGATE` instruction is a preprocessor macro command.
+
+For the prompt :
+
+```
+Implementing the support for Empty status. 
+The main file is "ERP/Module.Sales.Domain/Model/Quote/QuoteEntity.cs".
+The enumeration file is "ERP/Module.Sales.Domain/Model/Constants/QuoteStatus.cs".
+```
+
+The initial, merged prompt from the `QuoteEntity.cs` file, will contains this:
+
+```
+// Top Template Content
+
+# DOMAIN MODEL RULES
+
+📄 content of  `ERP/.bridge/Model/entity_rules.md`
+
+📄 content of  `ERP/.bridge/Module.Sales.Domain/Model/Model/business_rules.md`
+
+# TASK GOAL
+
+Implementing the support for Empty status.
+The main file is "ERP/Module.Sales.Domain/Model/Quote/QuoteEntity.cs".
+The enumeration file is "ERP/Module.Sales.Domain/Model/Constants/QuoteStatus.cs".
+```
+
+The top  `ERP/.bridge/.templates/task.md` is surrounding the lower `ERP/Module.Sales.Domain/Model/.bridge/.templates/task.md` content one. In the top file the variable `$<prompt>` is replaced by the merged lower one, where in the lower one `$<prompt>` is replaced by the user prompt. This is a Top-Down nested merging process, like a component that contains other nested components. This merged prompt will be stored in the variable `$<initial_prompt>`.
+
+### Mutations
+
+As example, here the `ERP/.bridge/.templates/task.processing.md` template:
+
+```
+$USE-TOOL bridge_state
+$USE-TOOL file_read
+$USE-TOOL file_write
+$USE-TOOL file_change_list
+$USE-TOOL shell
+$USE-TOOL dotnet
+
+# ROLE
+
+You are an expert Developer.
+
+$<initial_prompt>
+
+$<hand_off>
+
+# FINAL STEP
+
+- If you finished the task, use the `bridge_state` tool to transition to `reviewing`. Specify the code sections to review.
+- If you failed to complete the task, use the `bridge_state` tool to transition to `failed`. Specify why you failed to complete the task.
+```
+
+Here the `ERP/Module.Sales.Domain/Model/.bridge/.templates/task.processing.md` template:
+
+```
+$USE-TOOL search
+
+$IF-ANY .bridge/Model/Domain/*_guidelines.md
+# MODEL CODE GUIDELINES
+
+$AGGREGATE TOP-DOWN .bridge/Model/Domain/*_guidelines.md
+$END-IF
+
+$<hand_off>
+```
+
+**Note** : here, two standard variables are used :
+- `initial_prompt` : it is he merged initial prompt.
+- `hand_off` : it is the message given to the `bridge_state` as hand-of-prompt, the message to give to the next Chat to know what to do.
+
+For the prompt :
+
+```
+# INSTRUCTIONS
+
+Goal is validated. Perform the implementation.
+```
+
+Here the result :
+
+```
+# ROLE
+
+You are an expert Developer.
+
+// Top Template Content
+
+# DOMAIN MODEL RULES
+
+📄 content of  `ERP/.bridge/Model/entity_rules.md`
+
+📄 content of  `ERP/.bridge/Module.Sales.Domain/Model/Model/business_rules.md`
+
+# TASK GOAL
+
+Implementing the support for Empty status.
+The main file is "ERP/Module.Sales.Domain/Model/Quote/QuoteEntity.cs".
+The enumeration file is "ERP/Module.Sales.Domain/Model/Constants/QuoteStatus.cs".
+
+# INSTRUCTIONS
+
+Goal is validated. Perform the implementation.
+
+# FINAL STEP
+
+- If you finished the task, use the `bridge_state` tool to transition to `reviewing`. Specify the code sections to review.
+- If you failed to complete the task, use the `bridge_state` tool to transition to `failed`. Specify why you failed to complete the task.
+```
+
+**Note** : this is the prompt as text. The tool defined with `$USE-TOOL` are not anymore visible, but are used to define the declared tools to the Chat. Just as `$<prompt>` is used to nest `task.md` templates, `$<hand_off>` acts as the nesting insertion point for state templates.
+
+# Configuration
+
+## The Minimal Workflow Configuration
+
+The default configuration is a minimalist workflow that execute `Tasks`. To do so, `Spaces` must be defined.
 
 A `Space` is a sub directory in the `.bridge` directory. Those `Spaces` are defined in `.bridge/_map.json`. This file contains directories definitions :
 
 | Space     | Directory    | EntitiesFileConfig     | Lifecycle   | Description              |
 | --------- | ------------ | ---------------------- | ----------- | ------------------------ |
 | Works     | `.works`     | `_workflow.items.json` | `TRANSIENT` | Work-items management.   |
-| Agents    | `.agents`    |                        | `FIXED`     | Agent definitions.       |
 | Templates | `.templates` |                        | `FIXED`     | Prompt template library. |
 
-This configuration define three directories. There will be the given directories in the .bridge directory :
+This configuration define two directories. There will be the given directories in the .bridge directory :
 
 - `.bridge/.works/` that contains tasks to execute.
-- `.bridge/.agents/` that contains agent definitions.
 - `.bridge/.templates/` that contains prompt template definitions.
 
-Each `Space` item inherite from a `Lifecycle` reference. This values are constants recognized by ActionBridge :
+Each `Space` item inherit from a `Lifecycle` reference. This values are predefined constants :
 
 - `TRANSIENT` mean that the content of this space is only **transitory** and can be deleted when needed.
-- `FIXED` mean that the content of this space is a **specification** and cannot be deleted.
+- `FIXED` mean that the content of this space is a **specification** or **configuration** and cannot be deleted.
 
 A specific `.bridge/.works/_workflow.items.json` is created. This file define `Items`, the usage and behaviors attached to the `.md` files that populate this directory.
 
-| Name | Directory      | Format     | State        | Agent            | Signal    | Icon   | Color     | Tag       |
-| ---- | -------------- | ---------- | ------------ | ---------------- | --------- | ------ | --------- | --------- |
-| Task | `.works/Tasks` | `{0000}_*` |              |                  |           | `task` |           |           |
-|      |                |            | `pending`    | `.agents/Worker` | `PENDING` |        |           |           |
-|      |                |            | `processing` |                  | `WIP`     |        | `magenta` |           |
-|      |                |            | `failled`    |                  | `DONE`    |        | `red`     | `warning` |
-|      |                |            | `done`       |                  | `DONE`    |        |           | `check`   |
+| Name | Directory      | Format     | Template | State        | Transitions                   | Signal   |
+| ---- | -------------- | ---------- | -------- | ------------ | ----------------------------- | -------- |
+| Task | `.works/Tasks` | `WORKITEM` | `task`   |              |                               | `DRAFT`  |
+|      |                |            |          | `validating` | `processing` `rejected`       | `WIP`    |
+|      |                |            |          | `processing` | `reviewing` `failled`         | `WIP`    |
+|      |                |            |          | `reviewing`  | `processing` `failled`        | `WIP`    |
+|      |                |            |          | `testing`    | `validating` `failled` `done` | `WIP`    |
+|      |                |            |          | `rejected`   |                               | `CLOSED` |
+|      |                |            |          | `failled`    |                               | `CLOSED` |
+|      |                |            |          | `done`       |                               | `CLOSED` |
 
-This table define the `Task` item. They are stored in the `.works/Tasks` in the `.bridge` directory. The file name format pattern induce that a number (identifier of the task) is attributed to each Task. This number is incrementally created at project level. Exemple : `0001_payment.md`. A Task item can have four status : `pending`, `processing`, `failled` or `done`. The state is directly encapsulated in the file name. Example : `0001_payment.processing.md`.
+This table define the `Task` work-item. They are stored in the `.works/Tasks` in the `.bridge` directory. The file name format pattern is `WORKITEM`. It induce that ab identifier of the task and state number is attributed to each `Task` file.
 
-Only a `pending` `Task` may start a new LLM chat session, using the `Worker` chat definition. This mean that a `.md` file appearing in the `.bridge/.works/Tasks/` directory will trigger a chat session to be started with the file content as prompt.
+Each state file can have a Signal property that signal to the Dashboard what to do with this file and how to present each to the user. This property ca have few values :
+- `DRAFT` : it is simply a neutral, pending file.
+- `WIP` : it mean this file must be pushed to a new Chat session and a `.wip.md` processing file created. At the end, when the Chat quit, the `.wip.md` is terminated with en `end` signal string.
+- `CLOSED` : it is an end state.
 
-The same Task file will not be renamed to change state : a new file is created with a new state. Reading this Task definition, we understand that we may found one of this sets of files :
+# Preprocessor
+## Conventions
 
-- `0001_payment.md`, `0001_payment.pending.md`, `0001_payment.processing.md`, `0001_payment.done.md`
-- `0001_payment.md`, `0001_payment.pending.md`, `0001_payment.processing.md`, `0001_payment.failled.md`
-
-Only `bridge.exe` can start a new chat session and create a new file. A specific Skill
-
-## Hierarchical Aggregation
-
-### Multiple `.bridge`
-
-You can have multiple `.bridge` in the directory tree.
+Macros are instruction all time prefixed with a dollar `$` char. A double dollar at the start of a line is a comment.
 
 ```
-📁 ERP
-├── 📁 .bridge
-│   ├── 📄 _map.json
-│   ├── 📁 .agents
-│   │   └── 📁 Worker
-│   │       ├── 📄 _begin.md
-│   │       └── 📄 _end.md
-│   ├── 📁 .templates
-│   │   └── 📄 default.md
-│   └── 📁 .works
-│       └── 📁 Tasks
-│           └── 📄 0001_quote_lifecycle.md
-│           └── 📄 0002_update_rm.md
-│           └── 📄 0003_quote_validation.md
-│           └── 📄 0003_quote_validation.pending.md
-│           └── 📄 0003_quote_validation.processing.md
-│           └── 📄 0003_quote_validation.done.md
-├── 📁 Module.Sales.Domain
-│   ├── 📁 .bridge
-│   │   └── 📁 .agents
-│   │       └── 📁 Worker
-│   │           └── 📄 _begin.md
-│   ├── 📁 Model
-│   │   ├── 📁 .bridge
-│   │   │   └── 📁 .agents
-│   │   │       └── 📁 Worker
-│   │   │           └── 📄 _begin.md
-│   │   └── 📁 Quote
-│   │       └── 📄 QuoteEntity.cs
-│   └── 📁 ReadModel
-│       └── 📁 Quote
-│           └── 📄 QuoteView.cs
+$$ This is a comment line
 ```
 
-In this directory tree, if you start a `Task` with the `Worker` agent from the source file `QuoteEntity.cs`, the prompt will aggregate the content of the files in directories :
+Templating support variables. To insert any variable, use `$<name>` where name is the `name` of the variable.
 
-- `ERP/.bridge/.agents/Worker/`
-- `ERP/Module.Sales.Domain/.bridge/.agents/Worker/`
-- `ERP/Module.Sales.Domain/Model/.bridge/.agents/Worker/`
+Default variables :
 
-This is an example of the Hierarchical Aggregated Context prompt building.
+- `$<root_path>`
+- `$<current_file>`
+- `$<prompt>`
+- `$<initial_prompt>`
+- `$<hand_off>`
+- `$<root_file>`
+
+## Macros
+
+### Macro : `$IGNORE_PARENTS
+
+### Macro : `$DEFINE <name> <value>`
+
+### Macro : `$ADD <list name> <added value>`
+
+### Macro : `$AGGREGATE [TOP-DOWN / BOTTOM-UP] <file filter>`
+
+### Macro : `$INCLUDE <file path>`
+
+### Macro : `$IGNORE <file filter>`
+
+### Macro : `$USE_TOOL <tool name>`
+
+### Macro : `$IGNORE_TOOL <tool name>`
+
+### Macro : `$IF <name> $ELSE $END_IF`
+
+### Macro : `$IF_ANY <file filter> $ELSE $END_IF`
 
 # Advanced Workflow
 
 ## Spec-Driven Development
 
-ActionBridge is designed to build a complete, high-quality, localized specification system through an iterative, emergent process. Developers can utilize it in two primary ways:
+ActionBridge is shipped with a complete, high-quality, localized specification based workflow. It implement an iterative, emergent process. Developers can utilize it in two primary ways:
 
 - **Coding Assistant:** Processing transient work items using explicit programming delegation, similar to traditional AI coding tools.
     
@@ -176,7 +472,7 @@ ActionBridge minimizes bureaucratic overhead by strictly separating persistent a
 This system naturally forms a clear, cascading generation chain: `Intents` -> `Requirements` -> `Tickets` -> `Tasks`.
 
 ```mermaid
-flowchart LR
+flowchart
 
 subgraph Specs
 Intents --> Requirements
@@ -191,30 +487,31 @@ Requirements --> Tickets
 
 Crucially, ActionBridge allows the developer to enter this chain at any level of abstraction, delegating the remaining downward steps to the AI agents. You can scale the AI's autonomy based on your immediate needs:
 
-- **Manual Execution:** The developer creates **Tasks** directly to execute specific programming instructions, maintaining granular control over the immediate code generation.
+- **Manual Execution:** The developer creates `Tasks` directly to execute specific programming instructions, maintaining granular control over the immediate code generation.
     
-- **Delegated Planning:** The developer creates **Tickets**, allowing an Agent to plan the work and automatically break it down into actionable Tasks.
+- **Delegated Planning:** The developer creates `Tickets`, allowing a Chat session to plan the work and automatically break it down into actionable `Tasks`.
     
-- **Automated Workflow:** The developer defines the **Requirements**. Agents then read these rules to create the necessary Tickets, which subsequently generate the execution Tasks.
+- **Automated Workflow:** The developer defines the `Requirements`. They are processed to create the necessary `Tickets`, which subsequently generate the execution `Tasks`.
     
-- **Full Orchestration:** The developer focuses solely on high-level **Intents**. Agents take over entirely to align and generate the Requirements, cascade them into Tickets, and finally execute the Tasks.
+- **Full Orchestration:** The developer focuses solely on high-level `Intents`. They are processed to align and generate the `Requirements`, cascade them into `Tickets`, and finally execute the `Tasks`.
     
-Regardless of where the developer chooses to intervene, generating the final deliverable relies on the same core principle: observing what currently exists in the Deliverable Space, checking it against the Specification Space, and spinning up a transient workflow to make the code perfectly reflect the things that must be true.
+Regardless of where the developer chooses to intervene, generating the final deliverable relies on the same core principle: observing what currently exists in the **Deliverable Space**, checking it against the **Specification Space**, and spinning up a transient workflow to make the code perfectly reflect the things that must be true.
+
 ### Logical Ordering
 
-You can instruct ActionBridge to process a single item, a series of items, or all items. `Requirements` are processed in a specific order. Each one is assigned a unique number at the project level. Just like `Requirements`, `Tickets` and `Tasks` are also assigned unique numbers upon creation.
+You can instruct ActionBridge to process a single item, a series of items, or all items. `Requirements` are processed in a specific order (they are sorted). Each one is assigned a unique number at the project level. Just like `Requirements`, `Tickets` and `Tasks` are also assigned unique numbers upon creation.
 
 `Requirements` form a persistent, logical series that can be executed one by one to generate `Tickets`, and subsequently `Tasks`, to perform the actual programming work. Developers can insert new `Requirements` anywhere in the chain. However, the complete `Requirement` chain must remain logically coherent. For instance, a `Requirement` instructing the system to build a user management module must be positioned before a `Requirement` that adds a specific rule for user accounts.
 
 ### A "Distance Reduction" Engine
 
-When processing an `Intent`, the LLM is instructed to verify whether the existing `Requirements` align with the `Intent`'s content. If a `Requirement` is not cohesive with the `Intent`, it is corrected. Furthermore, a new `Requirement` can be generated if a specific aspect of an `Intent` is not yet represented.
+When processing an `Intent`, the Chat is instructed to verify whether the existing `Requirements` align with the `Intent`'s content. If a `Requirement` is not cohesive with the `Intent`, it is corrected. Furthermore, a new `Requirement` can be generated if a specific aspect of an `Intent` is not yet represented.
 
-When processing a `Requirement`, the LLM reads the source code to evaluate whether the requirement is currently met. If the source code does not align with the `Requirement`, `Tickets` are generated to describe the necessary changes.
+When processing a `Requirement`, the Chat reads the source code to evaluate whether the requirement is currently met. If the source code does not align with the `Requirement`, `Tickets` are generated to describe the necessary changes.
 
 A `Ticket` acts as a dynamic state evaluation request. During the processing of a `Ticket`, the LLM compares the `Ticket`'s content with what actually exists in the files (the source code reality). The goal of a `Ticket` is simply to emit a sequence of `Tasks` required to reduce the distance between the ticket's intent and the current reality to zero. The LLM can achieve this in multiple steps—it does not have to emit the complete, exact list of `Tasks` all at once. For example, it can emit 3 `Tasks`, re-evaluate the state, emit 2 more `Tasks`, evaluate again, emit 1 final `Task`, and then validate the `Ticket` as complete.
 
-- **Example:** You have a `Ticket` titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 4 tasks to create files, write logic, and map models. If you change the `Requirements` a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits a new `Ticket`, followed by 2 tasks to update the specific API mappings.
+- **Example:** You have a `Ticket` titled "Add PayPal support to Checkout." If you run this on a fresh branch, the AI sees a large gap between intent and reality, emitting 4 tasks to create files, write logic, and map models. If you change the `Requirements` a month later after the API structure has changed, the AI evaluates the _current_ reality, sees a smaller gap, and emits a new `Ticket`, followed by 2 `Tasks` to update the specific API mappings.
     
 - **Benefits:**
     
@@ -224,13 +521,13 @@ A `Ticket` acts as a dynamic state evaluation request. During the processing of 
         
 ### Workflow Summary
 
-A summary of the complete workflow:
+Here a summary of the complete workflow usages:
 
-- **Vibe Coding**: Create work items as `Intents` in the Specification Space. ActionBridge will then generate, modify, or expand the `Requirements`. New `Tickets` and `Tasks` may be generated and processed.
+- **Vibe Coding**: Create work items as `Intents` in the **Specification Space**. ActionBridge will then generate, modify, or expand the `Requirements`. New `Tickets` and `Tasks` may be generated and processed.
     
-- **Requirement-Driven Coding**: Create a logical, ordered chain of `Requirements`. ActionBridge will verify that the chain is coherent. If valid, it generates the necessary `Tickets`.
+- **Requirement-Driven Coding**: Create a logical, ordered chain of `Requirements`. ActionBridge will verify that the chain is coherent. If valid, it generates the necessary `Tickets` for `Requirements` that are not "true" in the **Deliverable Space** (the source code).
     
-- **Ticket-Driven Coding**: Create a `Ticket`. The resulting `Tasks` serve as complete prompts, containing exactly what the LLM needs to reduce the distance between the code reality and the intent.
+- **Ticket-Driven Coding**: Create a `Ticket`. If the Ticket goals or specifications are not reflected in the **Deliverable Space** (the source code), `Tasks` are created, containing exactly instructions to reduce the distance between the code reality and the intent of the `Ticket`.
     
 - **Execute Tasks**: Create a `Task` to be executed immediately.
     
@@ -239,14 +536,8 @@ As a developer, you can mix and match all four of these approaches within this A
 ![[Pasted image 20260424000107.png]]
 ### Bidirectional State Reconciliation
 
-ActionBridge operates as a bidirectional state reconciliation engine. While the standard flow cascades down from Specifications to Deliverables, the system can also run in reverse to verify that actual code behaviors and implemented rules remain perfectly reflected in the `Requirements`.
+You can introduce a bidirectional state reconciliation workflow. While the standard flow cascades down from **Specifications** to **Deliverables**, the system can also run in reverse to verify that actual code behaviors and implemented rules remain perfectly reflected in the `Requirements`.
 
-If a developer introduces a manual change directly into the business logic, this triggers a back-propagation of the source code reality into the Specification Space. When executed, this back-propagation ensures the `Requirements` remain the genuine, ultimate source of truth by forcing them to adapt to the actual, compiling source code.
+If a developer introduces a manual change directly into the business logic, you can triggers a back-propagation of the source code reality into the **Specification Space**. When executed, this back-propagation ensures the `Requirements` remain the genuine, ultimate source of truth by forcing them to adapt to the actual, compiling source code.
 
-This reverse-sync unlocks powerful workflows. Developers can manually write or insert large portions of legacy code and instruct ActionBridge to automatically generate the underlying `Requirements`. Furthermore, this enables a continuous "round-trip" delta reduction loop: a developer can quickly draft poorly optimized code, use back-propagation to extract its logical intent into a `Requirement`, and then trigger a forward pass, instructing the AI to perfectly refactor and rewrite the code based on that newly minted specification.
-### Hierarchical Context Cascading
-
-In the directory hierarchy, the configuration define two directories :
-
-- `.specs` : this directories contains the specifications, including `Intents` and `Requirements`.
-- `.works` : this directories contains `Tickets` and `Tasks`.
+This reverse-sync unlocks powerful workflows. Developers can manually write or insert large portions of legacy code and instruct ActionBridge to automatically generate the underlying `Requirements`. A developer can use ActionBridge to create .bridge directory at various place in the source code, to extract `Requirements` from an existing code base. Furthermore, this enables a continuous "round-trip" delta reduction loop: a developer can quickly draft poorly optimized code, use back-propagation to extract its logical intent into a `Requirement`, and then trigger a forward pass, instructing the AI to perfectly refactor and rewrite the code based on that newly minted specification using the defined programming rules, style and design guidelines.
